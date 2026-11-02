@@ -1,3 +1,10 @@
+/* Fonts are bundled with the app (no third-party requests, work offline):
+   Fredoka for headings, buttons and numbers (rounded and playful), Lexend for reading (made for legibility). */
+:root {
+  --font-display: 'Fredoka Variable', 'Fredoka', ui-rounded, 'Segoe UI', system-ui, sans-serif;
+  --font-body: 'Lexend Variable', 'Lexend', 'Segoe UI', system-ui, sans-serif;
+}
+
 /* World themes: mechanics are identical, only the look changes. System fonts only (no third-party requests). */
 :root, [data-world='emberwick'] {
   --bg: #1d1520;
@@ -63,12 +70,23 @@ body {
   background-image: var(--bg-art);
   background-attachment: fixed;
   color: var(--fg);
-  font-family: ui-rounded, 'SF Pro Rounded', 'Segoe UI', system-ui, -apple-system, sans-serif;
-  font-size: 17px;
+  font-family: var(--font-body);
+  font-size: 16px;
   line-height: 1.55;
   min-height: 100vh;
 }
-h1, h2, h3 { line-height: 1.2; margin: 0 0 0.5em; text-wrap: balance; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 600; line-height: 1.15; margin: 0 0 0.5em; text-wrap: balance; letter-spacing: 0.005em; }
+h1 { font-weight: 700; }
+.brand, .btn, .chip, .tabs button, .seg button, .topbar nav button, .kicker, .pill, .bubble,
+.timer-time, .stat-num, .creature-name, .avatar, .celebrate-kicker, .world-tag, .subject-name,
+.bar-num, .dots-label, .progress span, .child-card, .token, .zzz, .zzz-svg, .room-icon + h2, .haul strong {
+  font-family: var(--font-display);
+}
+.btn, .chip, .tabs button, .seg button, .topbar nav button { font-weight: 600; letter-spacing: 0.01em; }
+.brand { font-weight: 700 !important; font-size: 1.25rem !important; color: var(--accent); }
+.bubble { font-weight: 500; font-size: 1.12rem; }
+.kicker { letter-spacing: 0.12em; }
+.timer-time { font-weight: 600 !important; letter-spacing: 0 !important; }
 h1 { font-size: 2rem; }
 h2 { font-size: 1.35rem; }
 h3 { font-size: 1.1rem; }
