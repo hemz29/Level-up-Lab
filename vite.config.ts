@@ -10,8 +10,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['icon.svg'],
       manifest: {
-        name: "Raaga's Study Companion",
-        short_name: 'Study Companion',
+        name: 'Level-Up Lab',
+        short_name: 'Level-Up Lab',
         description: 'Your study plan, your creature, your rooms.',
         theme_color: '#2b2350',
         background_color: '#16132b',

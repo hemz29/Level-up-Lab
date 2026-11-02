@@ -32,12 +32,12 @@ function ParentInner() {
 
   const backup = async () => {
     const data = { app: 'raagas-study-companion', exportedAt: new Date().toISOString(), state: snapshot(), images: await allImages() };
-    download(`study-companion-backup-${today}.json`, JSON.stringify(data), 'application/json');
+    download(`level-up-lab-backup-${today}.json`, JSON.stringify(data), 'application/json');
   };
   const restore = async (file: File) => {
     try {
       const data = JSON.parse(await file.text());
-      if (data.app !== 'raagas-study-companion' || !data.state) throw new Error('Not a Study Companion backup file');
+      if (data.app !== 'raagas-study-companion' || !data.state) throw new Error('Not a Level-Up Lab backup file');
       if (!confirm('Replace everything on this laptop with this backup?')) return;
       await clearImages();
       for (const [id, url] of Object.entries(data.images ?? {})) await putImage(id, url as string);

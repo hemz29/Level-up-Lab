@@ -1,9 +1,9 @@
 {
-  "name": "raagas-study-companion",
+  "name": "level-up-lab",
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Raaga's Study Companion: a laptop-first PWA study coach with a creature game layer.",
+  "description": "Level-Up Lab: a laptop-first PWA study coach with a creature game layer.",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

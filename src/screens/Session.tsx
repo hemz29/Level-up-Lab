@@ -293,7 +293,7 @@ function Timer() {
     }
   }, [remaining]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  useEffect(() => { document.title = `${fmt(remaining)} · ${sub?.name}`; return () => { document.title = "Raaga's Study Companion"; }; });
+  useEffect(() => { document.title = `${fmt(remaining)} · ${sub?.name}`; return () => { document.title = 'Level-Up Lab'; }; });
 
   const pct = Math.min(1, elapsed / total);
   return (

@@ -1,4 +1,6 @@
-# Raaga's Study Companion
+# Level-Up Lab
+
+_Formerly "Raaga's Study Companion" in the PRD._
 
 A laptop-first, installable web app (PWA) that helps Raaga (Grade 6, ICSE) build a consistent, careful study habit on her own. She builds her plan and studies from her own books. The app is the coach and the game layer: finished study blocks and an honest written log grow a magical creature and earn play time in creative rooms.
 

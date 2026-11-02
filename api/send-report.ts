@@ -43,7 +43,7 @@ export default async function handler(req: Req, res: Res) {
     method: 'POST',
     headers: { authorization: `Bearer ${RESEND_API_KEY}`, 'content-type': 'application/json' },
     body: JSON.stringify({
-      from: REPORT_FROM_EMAIL || 'Study Companion <onboarding@resend.dev>',
+      from: REPORT_FROM_EMAIL || 'Level-Up Lab <onboarding@resend.dev>',
       to: [PARENT_EMAIL], // fixed recipient: never taken from the request
       subject,
       text,

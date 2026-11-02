@@ -17,7 +17,7 @@ export function Setup() {
         <div className="card narrow center">
           <p className="kicker">A new adventure begins</p>
           <h1>Hello, {name}.</h1>
-          <p className="big">This is your study companion. You make the plan, you do the work, and a creature grows because of it. Careful work opens rooms for art, music and games.</p>
+          <p className="big">Welcome to Level-Up Lab. You make the plan, you do the work, and a creature grows because of it. Careful work opens rooms for art, music and games.</p>
           <p className="muted">First, pick the world your creature will live in. It only changes how things look, so pick the one you love.</p>
           <button className="btn primary big" onClick={() => setStep(1)} autoFocus>Choose my world</button>
         </div>

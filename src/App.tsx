@@ -44,7 +44,7 @@ export default function App() {
   return (
     <div className="app">
       <header className="topbar no-print">
-        <button className="brand" onClick={() => go('home')}>Study Companion</button>
+        <button className="brand" onClick={() => go('home')}>Level-Up Lab</button>
         {!inRoom && (
           <nav aria-label="Main">
             {NAV.map((n) => (
