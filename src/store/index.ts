@@ -10,6 +10,7 @@ import { initialDue, schedule, selectRecall, toRecallItem, recallScore } from '.
 import { computeDayPlay } from '../engine/rewards';
 import { stageFor, stageIndex } from '../engine/creature';
 import { isValidMistakeNote } from '../engine/insights';
+import { subjectsFromTemplate, TEMPLATES } from '../data/templates';
 
 export function seedSubjects(): Subject[] {
   return seed.subjects.map((s) => ({
@@ -82,6 +83,7 @@ interface Actions {
   addChapter(subjectId: string, title: string): void;
   deleteChapter(subjectId: string, chapterId: string): void;
   renameSubject(subjectId: string, name: string): void;
+  loadTemplate(templateId: string): void;
   nameCreature(name: string): void;
   ackCelebration(): void;
   setCustomArt(stage: StageId, imageId?: string): void;
@@ -322,6 +324,15 @@ export const useStore = create<Store>()(
         })),
         renameSubject: (subjectId, name) => update((s) => ({ subjects: s.subjects.map((x) => (x.id === subjectId ? { ...x, name } : x)) })),
 
+        /** Replace the chapter lists with a ready-made portions list and draft a fresh plan from today. */
+        loadTemplate: (templateId) => update((s) => {
+          const t = TEMPLATES.find((x) => x.id === templateId);
+          if (!t) return {};
+          const today = todayKey();
+          const subjects = subjectsFromTemplate(t);
+          const pastDays = Object.fromEntries(Object.entries(s.plan.days).filter(([d]) => d < today));
+          return { subjects, plan: autoSpread(subjects, { ...s.plan, days: pastDays }, today), settings: { ...s.settings, chaptersReviewed: true } };
+        }),
         nameCreature: (name) => update((s) => ({ creature: { ...s.creature, name } })),
         ackCelebration: () => update((s) => ({ creature: { ...s.creature, pendingCelebration: undefined } })),
         setCustomArt: (stage, imageId) => update((s) => {

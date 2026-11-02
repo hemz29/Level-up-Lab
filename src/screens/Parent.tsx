@@ -10,6 +10,7 @@ import { useAccount } from '../lib/account';
 import { hashPin } from '../lib/pin';
 import { chapterTitle, subjectById } from '../store/selectors';
 import { PinGate } from '../components/PinGate';
+import { TEMPLATES } from '../data/templates';
 import type { AppState } from '../types';
 import type { Screen } from '../App';
 
@@ -127,6 +128,16 @@ function ParentInner() {
       <div className="card">
         <h2>Chapter lists</h2>
         <p className="muted">Check each subject against the textbook contents page. Rename, add or remove chapters, and mark heavy chapters (they get more time).</p>
+        <div className="template-box">
+          <strong>Load a school portions list</strong>
+          <p className="muted small">Replaces all subjects and chapters with the list below (every chapter marked "In portion") and drafts a new plan from today. Logged study history is kept.</p>
+          {TEMPLATES.map((t) => (
+            <div key={t.id} className="row wrap between">
+              <span><strong>{t.name}</strong><br /><span className="muted small">{t.subjects.map((x) => x.name).join(' · ')}</span></span>
+              <button className="btn small primary" onClick={() => { if (confirm(`Replace ${s.profile?.name ?? 'this child'}'s chapter lists with "${t.name}"?`)) { s.loadTemplate(t.id); setMsg(`Loaded "${t.name}" and drafted a new plan.`); } }}>Load</button>
+            </div>
+          ))}
+        </div>
         <label className="switch"><input type="checkbox" checked={s.settings.chaptersReviewed} onChange={(e) => s.setChaptersReviewed(e.target.checked)} /> I've reviewed the chapter lists</label>
         {s.subjects.map((sub) => (
           <div key={sub.id} className="subject-edit">

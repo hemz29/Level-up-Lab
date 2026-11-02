@@ -13,6 +13,7 @@ import { ConsistencyDots } from '../components/ConsistencyDots';
 import { TraitWheel } from '../components/TraitWheel';
 import { MistakeLogger } from '../components/MistakeLogger';
 import { FeedbackCard } from '../components/FeedbackCard';
+import { WorldPicker } from '../components/WorldPicker';
 import { lines } from '../lib/voice';
 import { WORLDS } from '../lib/worlds';
 import { useImage } from '../lib/useImage';
@@ -34,6 +35,7 @@ export function Home({ go }: { go: (s: Screen) => void }) {
   const next = nextStage(c.stage);
   const toTest = daysToTest(s, today);
   const [mistakeOpen, setMistakeOpen] = useState(false);
+  const [worldOpen, setWorldOpen] = useState(false);
   const pinned = s.gallery.filter((g) => g.pinned).slice(0, 3);
   const planToday = s.plan.days[today] ?? [];
   const careful = Object.values(s.sessions).reduce((a, x) => a + x.briefingsDone, 0);
@@ -61,6 +63,7 @@ export function Home({ go }: { go: (s: Screen) => void }) {
             <span>{c.stage === 'egg' ? `Hatches after ${config.hatchAfterBlocks} finished blocks` : `${next.gp - c.gp} GP to ${next.name}`}</span>
           </div>
         )}
+        <button className="btn ghost small world-move" onClick={() => setWorldOpen(true)}>🧭 Move to another world</button>
         {pinned.length > 0 && <div className="pinned">{pinned.map((g) => <PinnedArt key={g.id} id={g.id} />)}</div>}
       </section>
 
@@ -130,6 +133,7 @@ export function Home({ go }: { go: (s: Screen) => void }) {
         )}
       </section>
       {mistakeOpen && <MistakeLogger onClose={() => setMistakeOpen(false)} />}
+      {worldOpen && <WorldPicker onClose={() => setWorldOpen(false)} />}
     </div>
   );
 }

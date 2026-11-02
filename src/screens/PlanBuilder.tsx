@@ -38,7 +38,7 @@ function Portions({ onDone }: { onDone: () => void }) {
   return (
     <div className="stack">
       {!s.settings.chaptersReviewed && (
-        <p className="hint">These chapter lists are a draft until a grown-up checks them against your textbooks. You can still start marking portions.</p>
+        <p className="hint">These chapter lists are a draft until a grown-up checks them against your textbooks, or loads your school's portions list in Parent → Chapter lists. You can still start marking portions.</p>
       )}
       <div className="card row wrap">
         <label className="field inline">

@@ -1,0 +1,47 @@
+{
+  "id": "g6-nov-dec-2026",
+  "name": "Grade 6 · Nov–Dec 2026 portions (Raaga's class)",
+  "description": "Chapters from the school's November–December portions list. Revision, unit tests, discussions and activities are left out.",
+  "subjects": [
+    { "id": "english", "name": "English", "kind": "language", "color": "#d35400", "chapters": [
+      { "title": "Prose: The King Keeps His Appointment" },
+      { "title": "Poetry: The Inchcape Rock" },
+      { "title": "Grammar: Verbs and Tenses" },
+      { "title": "Reading Comprehension" } ] },
+    { "id": "maths", "name": "Mathematics", "kind": "maths", "color": "#e07a5f", "chapters": [
+      { "title": "Ch 12 · Algebra (continued)" },
+      { "title": "Ch 18 · Circles" },
+      { "title": "Ch 24 · Data Handling" },
+      { "title": "Ch 25 · Graphical Representation" },
+      { "title": "Ch 13 · Simple Equations", "weight": 2 },
+      { "title": "Ch 26 · Mean and Median" } ] },
+    { "id": "physics", "name": "Physics", "kind": "science", "color": "#4a90d9", "chapters": [
+      { "title": "Ch 4 · Machines That Help Us", "weight": 2 },
+      { "title": "Ch 5 · Light: The Way We See Things" } ] },
+    { "id": "chemistry", "name": "Chemistry", "kind": "science", "color": "#9b59b6", "chapters": [
+      { "title": "Theme 2 · Elements, Compounds, Symbols and Formulae", "weight": 2 } ] },
+    { "id": "biology", "name": "Biology", "kind": "memory", "color": "#6ab04c", "chapters": [
+      { "title": "Ch 3 · The Cell", "weight": 2 },
+      { "title": "Ch 4 · Digestive System" } ] },
+    { "id": "history", "name": "History & Civics", "kind": "memory", "color": "#c9a227", "chapters": [
+      { "title": "Ch 7 · Rise of Kingdoms and Republics: Magadha", "weight": 2 },
+      { "title": "Ch 10 · Local Self-Government: Rural" } ] },
+    { "id": "geography", "name": "Geography", "kind": "memory", "color": "#3d9970", "chapters": [
+      { "title": "Ch 7 · South America", "weight": 2 },
+      { "title": "Ch 5 · Minerals" } ] },
+    { "id": "french", "name": "French", "kind": "language", "color": "#e84393", "chapters": [
+      { "title": "Unité 5 · #Frigo" },
+      { "title": "Grammaire: l'heure, les temps et les saisons" },
+      { "title": "Grammaire: articles partitifs et adjectifs démonstratifs" },
+      { "title": "Verbes en -RE et -IR (réguliers)" },
+      { "title": "Vocabulaire: les magasins" } ] },
+    { "id": "kannada", "name": "Kannada", "kind": "language", "color": "#f39c12", "chapters": [
+      { "title": "Lesson: Ninnallu adbutha shakti ede" },
+      { "title": "Poem: Ikyagaana" },
+      { "title": "Grammar: Opposite words, gender, singular and plural" },
+      { "title": "Grammar: Making sentences and word meanings" } ] },
+    { "id": "computers", "name": "Computers", "kind": "other", "color": "#16a085", "chapters": [
+      { "title": "Introduction to HTML5 and CSS" },
+      { "title": "More about Artificial Intelligence (AI)" } ] }
+  ]
+}
