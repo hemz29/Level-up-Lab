@@ -559,8 +559,8 @@ function WrapUp({ onBack, go }: { onBack: () => void; go: (s: Screen) => void })
       </div>
       <div className="row wrap">
         {!session.reportSent
-          ? <button className="btn primary big" onClick={() => setShowReport(true)}>Tell Mum how today went</button>
-          : <span className="pill strong">Mum's report sent ✓</span>}
+          ? <button className="btn primary big" onClick={() => setShowReport(true)}>Tell {s.profile!.parentLabel} how today went</button>
+          : <span className="pill strong">Report sent ✓</span>}
         <button className="btn" onClick={() => go('rooms')}>Go to rooms</button>
         <button className="btn ghost" onClick={onBack}>Back to session</button>
       </div>

@@ -143,6 +143,7 @@ export interface Profile {
   name: string;
   world: WorldId;
   createdAt: string;
+  parentLabel: string; // what the child calls the grown-up who gets the report: "Mum", "Dad", "Amma"…
 }
 
 export interface GalleryItem {
@@ -167,5 +168,6 @@ export interface AppState {
   weekBonusesGiven: DateKey[]; // weekStarts already rewarded for unused token
   swapStreak: Record<string, number>;
   gallery: GalleryItem[];
+  feedbackWeeks: DateKey[]; // weeks the child already answered "is this helping?"
   activeBlock?: ActiveBlock;
 }

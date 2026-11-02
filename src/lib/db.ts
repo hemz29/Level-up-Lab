@@ -1,6 +1,6 @@
 import { openDB, type IDBPDatabase } from 'idb';
 
-const DB_NAME = 'raaga-study-companion';
+const DB_NAME = 'level-up-lab';
 let dbp: Promise<IDBPDatabase> | null = null;
 
 function db() {

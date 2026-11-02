@@ -5,7 +5,7 @@ import { config } from '../config';
 import { todayKey } from '../engine/dates';
 import { stageIndex } from '../engine/creature';
 import { balanceOf } from '../store/selectors';
-import { deleteImage, putImage } from '../lib/db';
+import { dropImage, storeImage } from '../lib/sync';
 import { useImage } from '../lib/useImage';
 import { uid } from '../engine/planner';
 import { lines } from '../lib/voice';
@@ -132,7 +132,7 @@ export function ArtRoom({ go }: { go: (s: Screen) => void }) {
 
   const save = async () => {
     const id = uid('art');
-    await putImage(id, canvas.current!.toDataURL('image/png'));
+    await storeImage(id, canvas.current!.toDataURL('image/png'));
     s.addGalleryItem(id);
     setSaved(true);
     play('sparkle');
@@ -209,7 +209,7 @@ function Gallery() {
   const upload = async (file: File) => {
     const dataUrl = await new Promise<string>((res) => { const r = new FileReader(); r.onload = () => res(r.result as string); r.readAsDataURL(file); });
     const id = uid('art');
-    await putImage(id, dataUrl);
+    await storeImage(id, dataUrl);
     s.addGalleryItem(id);
   };
 
@@ -237,7 +237,7 @@ function Gallery() {
             <div className="row wrap">
               <button className="btn small" onClick={() => s.togglePin(g.id)}>{g.pinned ? '📌 Pinned at home' : 'Pin at home'}</button>
               <button className="btn small" onClick={() => setDesignFor(designFor === g.id ? null : g.id)}>Use for creature…</button>
-              <button className="btn small ghost" onClick={async () => { await deleteImage(g.id); s.removeGalleryItem(g.id); }}>Delete</button>
+              <button className="btn small ghost" onClick={async () => { await dropImage(g.id); s.removeGalleryItem(g.id); }}>Delete</button>
             </div>
             {designFor === g.id && (
               <div className="row wrap">

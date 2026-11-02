@@ -34,8 +34,8 @@ export const lines = {
   breakTime: 'Stretch, sip some water, look out of a window. I\'ll call you back.',
   wrapUp: (name: string) => `What a session, ${name}! Let's see what you've earned.`,
   timeUp: "That's enough adventure for today! Let's save some magic for tomorrow.",
-  reportReminder: 'Mum hasn\'t heard about today yet. Want to tell her how it went?',
-  reportReminderPast: 'Mum hasn\'t heard about our last study day yet. Shall we send it now?',
+  reportReminder: (who: string) => `${who} hasn't heard about today yet. Want to send the report?`,
+  reportReminderPast: (who: string) => `${who} hasn't heard about our last study day yet. Shall we send it now?`,
   reportSent: 'Sent! I added a little sparkle to it.',
   lightDay: 'A light day! One cosy block and three good points. It still counts, I promise.',
 };

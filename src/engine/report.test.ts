@@ -11,7 +11,7 @@ describe('daily report', () => {
       recallScore: 0.8, recallCount: 5, tomorrowRecall: ['Plassey'], stageName: 'Hatchling', moodLabel: 'very happy',
       playEarned: 25, playUsed: 10, lightDay: false, note: 'Fractions were fun',
     });
-    expect(r.text.split('\n')[0]).toMatch(/caught 1 of her own mistake:/);
+    expect(r.text.split('\n')[0]).toMatch(/Mistakes Raaga caught on their own: 1/);
     expect(r.text).toContain('Recall quiz: 80%');
     expect(r.text).toContain("Tomorrow's recall: Plassey");
     expect(r.text).toContain('A note from Raaga: Fractions were fun');

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy · Level-Up Lab</title>
+<style>
+  :root { --bg: #f6f5ff; --fg: #262347; --muted: #5f5b85; --line: #dcd8f5; --accent: #5b4bb5; color-scheme: light dark; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #16132b; --fg: #ece9ff; --muted: #b3aed6; --line: #34305a; --accent: #b1a6ff; } }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 17px/1.6 system-ui, -apple-system, 'Segoe UI', sans-serif; }
+  main { max-width: 720px; margin: 0 auto; padding: 40px 16px 64px; }
+  h1 { font-size: 2rem; margin: 0 0 4px; } h2 { font-size: 1.2rem; margin: 32px 0 8px; }
+  .muted { color: var(--muted); } a { color: var(--accent); }
+  table { border-collapse: collapse; width: 100%; } td, th { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Privacy notice</h1>
+  <p class="muted">Level-Up Lab · last updated November 2026</p>
+
+  <p>Level-Up Lab is a study-habit coach for school children. It doesn't teach content, show ads, sell data, or use AI. This notice explains what we keep and why, in plain words.</p>
+
+  <h2>Who signs up</h2>
+  <p>Only a parent or guardian can create an account, using their own email address. Children don't need an email address, phone number or password. The parent adds each child with a first name or nickname only.</p>
+
+  <h2>What we keep</h2>
+  <table>
+    <tr><th>Data</th><th>Why</th><th>Who can see it</th></tr>
+    <tr><td>Parent's email address</td><td>Signing in with a one-time code; receiving the daily report the child chooses to send</td><td>The parent; the Level-Up Lab team (to know who is using the app)</td></tr>
+    <tr><td>Child's nickname</td><td>Greeting the child and telling siblings apart</td><td>The parent; the Level-Up Lab team</td></tr>
+    <tr><td>Study progress: plans, takeaways and notes, mistakes caught, quiz answers, drawings, creature</td><td>So the child's progress is available on any device the family signs in on</td><td><strong>Only the parent's account.</strong> The team can't read it.</td></tr>
+    <tr><td>Usage numbers: study days, minutes, blocks, quiz scores, mistake counts by type, creature stage</td><td>Checking that the app actually helps children, and improving it</td><td>The parent (inside the app); the Level-Up Lab team</td></tr>
+    <tr><td>Weekly feedback the child chooses to give ("Is Level-Up Lab helping you?" and an optional comment)</td><td>Improving the app</td><td>The Level-Up Lab team</td></tr>
+  </table>
+  <p>We don't collect location, contacts, photos of the child, school names, or advertising identifiers. There are no third-party analytics or ad trackers.</p>
+
+  <h2>Services we use</h2>
+  <ul>
+    <li><strong>Supabase</strong>: secure database and sign-in.</li>
+    <li><strong>Vercel</strong>: hosts the app.</li>
+    <li><strong>Resend</strong>: sends sign-in codes and the daily report email.</li>
+  </ul>
+  <p>They process data only to provide these services to us.</p>
+
+  <h2>Keeping it safe</h2>
+  <p>Data is encrypted in transit. Database rules mean each family can only ever reach its own children's data. The team's dashboard receives numbers only, never children's notes or drawings.</p>
+
+  <h2>Your choices</h2>
+  <ul>
+    <li><strong>Delete a child's profile</strong> or <strong>your whole account</strong> at any time in <em>Parent → Account</em>. Deletion is immediate and permanent.</li>
+    <li><strong>Download a copy</strong> of your child's data in <em>Parent → Data</em>.</li>
+    <li>The daily report is only sent when the child presses the button, after seeing exactly what it says.</li>
+  </ul>
+
+  <h2>Contact</h2>
+  <p>Questions or requests: <a href="mailto:CONTACT_EMAIL_HERE">CONTACT_EMAIL_HERE</a></p>
+</main>
+</body>
+</html>

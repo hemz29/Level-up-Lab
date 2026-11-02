@@ -1,4 +1,4 @@
-const SALT = 'raaga-study-companion:v1:';
+const SALT = 'level-up-lab:v1:';
 
 export async function hashPin(pin: string): Promise<string> {
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(SALT + pin));

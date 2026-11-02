@@ -3,7 +3,10 @@ import { useStore, snapshot } from '../store';
 import { config } from '../config';
 import { toCsv } from '../engine/csv';
 import { todayKey } from '../engine/dates';
-import { allImages, clearImages, putImage } from '../lib/db';
+import { getImage } from '../lib/db';
+import { closeChild, eraseActiveChild, forgetLocalChild, storeImage } from '../lib/sync';
+import { deleteAccount, deleteChild } from '../lib/cloud';
+import { useAccount } from '../lib/account';
 import { hashPin } from '../lib/pin';
 import { chapterTitle, subjectById } from '../store/selectors';
 import { PinGate } from '../components/PinGate';
@@ -29,9 +32,12 @@ function ParentInner() {
   const [newPin, setNewPin] = useState('');
   const fileRef = useRef<HTMLInputElement>(null);
   const today = todayKey();
+  const account = useAccount();
 
   const backup = async () => {
-    const data = { app: 'raagas-study-companion', exportedAt: new Date().toISOString(), state: snapshot(), images: await allImages() };
+    const images: Record<string, string> = {};
+    for (const g of s.gallery) { const url = await getImage(g.id); if (url) images[g.id] = url; }
+    const data = { app: 'raagas-study-companion', exportedAt: new Date().toISOString(), state: snapshot(), images };
     download(`level-up-lab-backup-${today}.json`, JSON.stringify(data), 'application/json');
   };
   const restore = async (file: File) => {
@@ -39,8 +45,8 @@ function ParentInner() {
       const data = JSON.parse(await file.text());
       if (data.app !== 'raagas-study-companion' || !data.state) throw new Error('Not a Level-Up Lab backup file');
       if (!confirm('Replace everything on this laptop with this backup?')) return;
-      await clearImages();
-      for (const [id, url] of Object.entries(data.images ?? {})) await putImage(id, url as string);
+      await eraseActiveChild();
+      for (const [id, url] of Object.entries(data.images ?? {})) await storeImage(id, url as string);
       s.replaceAll(data.state as AppState);
       setMsg('Backup restored.');
     } catch (e) {
@@ -59,6 +65,46 @@ function ParentInner() {
     <div className="stack">
       <h1>Parent area</h1>
       {msg && <p className="hint">{msg}</p>}
+
+      {account.mode === 'cloud' && (
+        <div className="card">
+          <h2>Account</h2>
+          <p className="muted">Signed in as <strong>{account.email}</strong>. Daily reports go to this address. {s.profile?.name}'s progress is saved to your account, so it's there on any device you sign in on.</p>
+          <div className="row wrap">
+            <button className="btn" onClick={account.switchChild}>Switch child</button>
+            <button className="btn" onClick={account.signOut}>Sign out</button>
+            {account.isAdmin && <button className="btn" onClick={account.openAdmin}>Admin dashboard</button>}
+          </div>
+          <details>
+            <summary>Remove or delete</summary>
+            <div className="stack">
+              <p className="muted small">Removing a child deletes their profile, progress and drawings permanently. Deleting your account removes you and all your children.</p>
+              <div className="row wrap">
+                <button className="btn ghost" onClick={async () => {
+                  if (!confirm(`Permanently delete ${s.profile?.name ?? 'this child'}'s profile and all their progress?`)) return;
+                  const id = account.childId;
+                  try { await deleteChild(id); } catch (e) { setMsg((e as Error).message); return; }
+                  await closeChild(); await forgetLocalChild(id); account.childRemoved();
+                }}>Remove {s.profile?.name ?? 'this child'}</button>
+                <button className="btn ghost" onClick={async () => {
+                  if (!confirm('Permanently delete your account and ALL your children\'s data? This cannot be undone.') || !confirm('Are you completely sure?')) return;
+                  const id = account.childId;
+                  try { await deleteAccount(); } catch (e) { setMsg((e as Error).message); return; }
+                  await closeChild(); await forgetLocalChild(id); account.signOut();
+                }}>Delete my account</button>
+              </div>
+            </div>
+          </details>
+        </div>
+      )}
+
+      <div className="card">
+        <h2>Daily report</h2>
+        <label className="field inline"><span>{s.profile?.name} sends reports to</span>
+          <input defaultValue={s.profile?.parentLabel} maxLength={20} onBlur={(e) => e.target.value.trim() && s.setParentLabel(e.target.value.trim())} />
+        </label>
+        <p className="muted small">This is just the name the creature uses ("Tell {s.profile?.parentLabel} how today went").{account.mode === 'cloud' ? ' The email always goes to the signed-in account.' : ''}</p>
+      </div>
 
       <div className="card">
         <h2>Pause</h2>
@@ -109,7 +155,9 @@ function ParentInner() {
 
       <div className="card">
         <h2>Data</h2>
-        <p className="muted">Everything is stored only in this browser. <strong>Clearing browser data erases progress</strong>, so download a backup now and then.</p>
+        {account.mode === 'cloud'
+          ? <p className="muted">Progress is saved to your account and on this device. You can still download a backup or the logs.</p>
+          : <p className="muted">Everything is stored only in this browser. <strong>Clearing browser data erases progress</strong>, so download a backup now and then.</p>}
         <div className="row wrap">
           <button className="btn primary" onClick={backup}>Download backup (JSON)</button>
           <button className="btn" onClick={() => fileRef.current?.click()}>Restore from backup</button>
@@ -138,7 +186,7 @@ function ParentInner() {
 
       <div className="card danger">
         <h2>Start over</h2>
-        <button className="btn ghost" onClick={async () => { if (confirm('Erase ALL progress on this laptop? Download a backup first!') && confirm('Really erase everything?')) { await clearImages(); s.resetAll(); } }}>Erase everything</button>
+        <button className="btn ghost" onClick={async () => { if (confirm(`Erase ALL of ${s.profile?.name}'s progress? Download a backup first!`) && confirm('Really erase everything?')) await eraseActiveChild(); }}>Erase this child's progress</button>
       </div>
     </div>
   );

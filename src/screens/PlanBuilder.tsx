@@ -38,7 +38,7 @@ function Portions({ onDone }: { onDone: () => void }) {
   return (
     <div className="stack">
       {!s.settings.chaptersReviewed && (
-        <p className="hint">These chapter lists are a draft until Mum checks them against your textbooks. You can still start marking portions.</p>
+        <p className="hint">These chapter lists are a draft until a grown-up checks them against your textbooks. You can still start marking portions.</p>
       )}
       <div className="card row wrap">
         <label className="field inline">
@@ -113,7 +113,7 @@ function Days({ onShare }: { onShare: () => void }) {
         <p className="muted">Drag a block to another day to move it. Moved blocks stay put when you re-make the plan.</p>
         <div className="row">
           <button className="btn" onClick={() => s.regeneratePlan()}>Re-spread plan</button>
-          <button className="btn" onClick={onShare}>Want Mum to take a look?</button>
+          <button className="btn" onClick={onShare}>Want {s.profile?.parentLabel ?? 'a grown-up'} to take a look?</button>
         </div>
       </div>
       {over && <Bubble tone="nudge">{lines.overPlanned} ({prettyDay(over)})</Bubble>}

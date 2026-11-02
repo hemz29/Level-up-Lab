@@ -1,11 +1,9 @@
 import { create } from 'zustand';
-import { createJSONStorage, persist } from 'zustand/middleware';
 import type {
   AppState, BlockLog, DateKey, DaySession, PlannedBlock, PortionStatus, RecallRating, StageId, Subject, Takeaway, WorldId,
 } from '../types';
 import seed from '../data/subjects.json';
 import { config } from '../config';
-import { kvStorage } from '../lib/db';
 import { todayKey, weekStart, addDays } from '../engine/dates';
 import { autoSpread, moveBlock as moveBlockPure, uid } from '../engine/planner';
 import { initialDue, schedule, selectRecall, toRecallItem, recallScore } from '../engine/recall';
@@ -21,8 +19,11 @@ export function seedSubjects(): Subject[] {
 }
 
 export function initialState(): AppState {
+  // profile and activeBlock are listed explicitly so a reset (zustand merges state) really clears them
   return {
     version: 1,
+    profile: undefined,
+    activeBlock: undefined,
     subjects: seedSubjects(),
     plan: { days: {} },
     sessions: {},
@@ -36,6 +37,7 @@ export function initialState(): AppState {
     weekBonusesGiven: [],
     swapStreak: {},
     gallery: [],
+    feedbackWeeks: [],
   };
 }
 
@@ -46,8 +48,9 @@ export interface SubmitBlockInput {
 }
 
 interface Actions {
-  setupProfile(name: string, world: WorldId): void;
+  setupProfile(name: string, world: WorldId, parentLabel: string): void;
   setWorld(world: WorldId): void;
+  setParentLabel(label: string): void;
   setPortion(chapterId: string, status: PortionStatus): void;
   setTestDate(subjectId: string | 'global', date?: DateKey): void;
   regeneratePlan(): void;
@@ -85,6 +88,7 @@ interface Actions {
   addGalleryItem(id: string): void;
   togglePin(id: string): void;
   removeGalleryItem(id: string): void;
+  markFeedback(weekStart: DateKey): void;
   dailyHousekeeping(): void;
   replaceAll(s: AppState): void;
   resetAll(): void;
@@ -134,7 +138,6 @@ function recomputeDay(s: AppState, date: DateKey): Partial<AppState> {
 }
 
 export const useStore = create<Store>()(
-  persist(
     (set) => {
       const update = (fn: (s: AppState) => Partial<AppState>) => set((s) => fn(s) as Partial<Store>);
       const updateToday = (fn: (s: AppState, today: DateKey) => Partial<AppState>) =>
@@ -149,7 +152,8 @@ export const useStore = create<Store>()(
         ...initialState(),
         hydrated: false,
 
-        setupProfile: (name, world) => update(() => ({ profile: { name, world, createdAt: new Date().toISOString() } })),
+        setupProfile: (name, world, parentLabel) => update(() => ({ profile: { name, world, parentLabel, createdAt: new Date().toISOString() } })),
+        setParentLabel: (parentLabel) => update((s) => ({ profile: s.profile && { ...s.profile, parentLabel } })),
         setWorld: (world) => update((s) => ({ profile: s.profile && { ...s.profile, world } })),
 
         setPortion: (chapterId, status) => update((s) => ({
@@ -328,6 +332,7 @@ export const useStore = create<Store>()(
         addGalleryItem: (id) => update((s) => ({ gallery: [{ id, createdAt: new Date().toISOString(), pinned: false }, ...s.gallery] })),
         togglePin: (id) => update((s) => ({ gallery: s.gallery.map((g) => (g.id === id ? { ...g, pinned: !g.pinned } : g)) })),
         removeGalleryItem: (id) => update((s) => ({ gallery: s.gallery.filter((g) => g.id !== id) })),
+        markFeedback: (weekStart) => update((s) => ({ feedbackWeeks: [...(s.feedbackWeeks ?? []), weekStart] })),
 
         /** Runs on load: keeps pause days frozen and grants the "kept your light token" weekly bonus. */
         dailyHousekeeping: () => update((s) => {
@@ -348,24 +353,10 @@ export const useStore = create<Store>()(
           return out;
         }),
 
-        replaceAll: (state) => set(() => ({ ...initialState(), ...state, activeBlock: undefined })),
+        replaceAll: (state) => set(() => ({ ...initialState(), ...state })),
         resetAll: () => set(() => ({ ...initialState() })),
       };
     },
-    {
-      name: 'app-state',
-      version: 1,
-      storage: createJSONStorage(() => kvStorage),
-      partialize: (s) => {
-        const { hydrated, ...rest } = s;
-        return Object.fromEntries(Object.entries(rest).filter(([, v]) => typeof v !== 'function')) as unknown as Store;
-      },
-      onRehydrateStorage: () => () => {
-        useStore.setState({ hydrated: true });
-        useStore.getState().dailyHousekeeping();
-      },
-    },
-  ),
 );
 
 export function snapshot(): AppState {

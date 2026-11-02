@@ -21,7 +21,7 @@ export function buildReport(r: ReportInput): { subject: string; text: string } {
   const subjects = [...new Set(r.blocks.map((b) => b.subject))];
   const lines: string[] = [];
   if (r.mistakes.length) {
-    lines.push(`${r.name} caught ${r.mistakes.length} of her own mistake${r.mistakes.length > 1 ? 's' : ''}:`);
+    lines.push(`Mistakes ${r.name} caught on their own: ${r.mistakes.length}`);
     r.mistakes.forEach((m) => lines.push(`  • ${m.category} (${m.subject}): ${m.note}`));
   } else {
     lines.push('No self-caught mistakes logged today.');

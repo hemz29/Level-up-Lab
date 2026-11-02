@@ -11,6 +11,7 @@ import { chapterTitle, moodOf, MOOD_LABEL, subjectById, tomorrowRecallTopics } f
 import { lines } from '../lib/voice';
 import { play } from '../lib/sound';
 import { Bubble } from '../components/Bubble';
+import { authHeader, cloudEnabled } from '../lib/supabase';
 
 export function Report({ date, onDone, onBack }: { date: DateKey; onDone: () => void; onBack?: () => void }) {
   const s = useStore();
@@ -44,9 +45,10 @@ export function Report({ date, onDone, onBack }: { date: DateKey; onDone: () => 
   const send = async () => {
     setStatus('sending');
     try {
+      if (!cloudEnabled) throw new Error('email needs a signed-in account');
       const res = await fetch('/api/send-report', {
         method: 'POST',
-        headers: { 'content-type': 'application/json', 'x-report-secret': import.meta.env.VITE_REPORT_SHARED_SECRET ?? '' },
+        headers: { 'content-type': 'application/json', ...(await authHeader()) },
         body: JSON.stringify({ subject: report.subject, text: report.text, date }),
       });
       if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error ?? `Server said ${res.status}`);
@@ -71,8 +73,8 @@ export function Report({ date, onDone, onBack }: { date: DateKey; onDone: () => 
   return (
     <div className="page">
       <div className="card narrow">
-        <p className="kicker">Tell Mum how {date === todayKey() ? 'today' : prettyDay(date)} went</p>
-        <p className="muted">Here's exactly what will be sent. Nothing else leaves your laptop.</p>
+        <p className="kicker">Tell {s.profile!.parentLabel} how {date === todayKey() ? 'today' : prettyDay(date)} went</p>
+        <p className="muted">Here's exactly what will be emailed to the grown-up who signed you in.</p>
         <pre className="report-preview">{report.text}</pre>
         <label className="field">
           <span>Add a note of your own (optional)</span>
@@ -89,7 +91,7 @@ export function Report({ date, onDone, onBack }: { date: DateKey; onDone: () => 
           </div>
         )}
         <div className="row">
-          <button className="btn primary big" disabled={status === 'sending'} onClick={send}>{status === 'sending' ? 'Sending…' : 'Send to Mum'}</button>
+          <button className="btn primary big" disabled={status === 'sending'} onClick={send}>{status === 'sending' ? 'Sending…' : `Send to ${s.profile!.parentLabel}`}</button>
           {onBack && <button className="btn ghost" onClick={onBack}>Back</button>}
         </div>
       </div>

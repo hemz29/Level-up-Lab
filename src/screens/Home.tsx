@@ -12,6 +12,7 @@ import { Bubble } from '../components/Bubble';
 import { ConsistencyDots } from '../components/ConsistencyDots';
 import { TraitWheel } from '../components/TraitWheel';
 import { MistakeLogger } from '../components/MistakeLogger';
+import { FeedbackCard } from '../components/FeedbackCard';
 import { lines } from '../lib/voice';
 import { WORLDS } from '../lib/worlds';
 import { useImage } from '../lib/useImage';
@@ -41,8 +42,8 @@ export function Home({ go }: { go: (s: Screen) => void }) {
 
   let say = c.stage === 'egg' ? lines.eggGreet(profile.name) : lines.greet(profile.name, mood);
   let tone: 'normal' | 'nudge' | 'cheer' = 'normal';
-  if (unsentPast) { say = lines.reportReminderPast; tone = 'nudge'; }
-  else if (session?.blockIds.length && !session.reportSent && gate.passed) { say = lines.reportReminder; tone = 'nudge'; }
+  if (unsentPast) { say = lines.reportReminderPast(profile.parentLabel); tone = 'nudge'; }
+  else if (session?.blockIds.length && !session.reportSent && gate.passed) { say = lines.reportReminder(profile.parentLabel); tone = 'nudge'; }
 
   const studied = (session?.blockIds.length ?? 0) > 0;
 
@@ -84,7 +85,7 @@ export function Home({ go }: { go: (s: Screen) => void }) {
             </>
           )}
           {nudge && <p className="hint">💡 {nudge}</p>}
-          {unsentPast && <button className="btn" onClick={() => go('report-past')}>Tell Mum about {prettyDay(unsentPast)}</button>}
+          {unsentPast && <button className="btn" onClick={() => go('report-past')}>Tell {profile.parentLabel} about {prettyDay(unsentPast)}</button>}
         </div>
 
         <div className="card">
@@ -118,6 +119,8 @@ export function Home({ go }: { go: (s: Screen) => void }) {
           {top ? <p>Your sneakiest slip so far: <strong>{top.icon} {top.label}</strong> ({top.count}×)</p> : <p className="muted">No mistakes caught yet. Catching one earns bonus play time!</p>}
           <button className="btn ghost small" onClick={() => go('insights')}>Open notebook</button>
         </div>
+
+        <FeedbackCard />
 
         {c.stage !== 'egg' && (
           <div className="card center">
