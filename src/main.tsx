@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { registerSW } from 'virtual:pwa-register';
 import '@fontsource-variable/fredoka';
 import '@fontsource-variable/lexend';
+import '@fontsource-variable/cinzel';
 import App from './App';
 import './styles/app.css';
 

@@ -19,7 +19,9 @@ export function WorldPicker({ onClose }: { onClose: () => void }) {
       <p>{who} comes with you, with the same name, level, GP and treasures. Only the scenery and colours change, and you can move back any time.</p>
       <div className="world-grid">
         {(Object.keys(WORLDS) as WorldId[]).map((id) => (
-          <button key={id} className={`world-card world-${id} ${pick === id ? 'on' : ''}`} onClick={() => { setPick(id); play('accept'); }} aria-pressed={pick === id}>
+          <button key={id} className={`world-card world-${id} ${WORLDS[id].art ? 'has-art' : ''} ${pick === id ? 'on' : ''}`}
+            style={WORLDS[id].art ? { backgroundImage: `url(${WORLDS[id].art!.card})` } : undefined}
+            onClick={() => { setPick(id); play('accept'); }} aria-pressed={pick === id}>
             <span className="world-tag">{id === current ? 'You live here now' : WORLDS[id].tagline}</span>
             <h2>{WORLDS[id].name}</h2>
             <Creature stage={c.stage} world={id} mood="happy" size={110} cosmetics={c.cosmetics} customArtId={c.customArt[c.stage]} />

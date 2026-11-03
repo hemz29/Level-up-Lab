@@ -54,9 +54,12 @@ export function Setup({ name: givenName }: { name?: string }) {
         <h1 className="center">Where will your creature live?</h1>
         <div className="world-grid">
           {(Object.keys(WORLDS) as WorldId[]).map((id) => (
-            <button key={id} className={`world-card world-${id} ${world === id ? 'on' : ''}`} onClick={() => { setWorld(id); play('accept'); }}>
+            <button key={id} className={`world-card world-${id} ${WORLDS[id].art ? 'has-art' : ''} ${world === id ? 'on' : ''}`}
+              style={WORLDS[id].art ? { backgroundImage: `url(${WORLDS[id].art!.card})` } : undefined}
+              onClick={() => { setWorld(id); play('accept'); }} aria-pressed={world === id}>
               <span className="world-tag">{WORLDS[id].tagline}</span>
               <h2>{WORLDS[id].name}</h2>
+              <p className="world-motto">{WORLDS[id].motto}</p>
               <p>{WORLDS[id].description}</p>
             </button>
           ))}
@@ -76,6 +79,7 @@ export function Setup({ name: givenName }: { name?: string }) {
         <h1>You have received a {w.eggWord}.</h1>
         <Creature stage="egg" world={world!} wobble size={240} />
         <p className="big">It's warm, and something inside is humming. Finish two study blocks with honest notes and it will hatch.</p>
+        <p className="world-quote">{w.quotes[0]}</p>
         <button className="btn primary big" onClick={() => { setupProfile(name.trim(), world!, parentLabel.trim() || 'Mum'); play('start'); }} autoFocus>Take it to {w.home}</button>
       </div>
     </div>

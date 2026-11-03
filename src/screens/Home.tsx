@@ -15,7 +15,7 @@ import { MistakeLogger } from '../components/MistakeLogger';
 import { FeedbackCard } from '../components/FeedbackCard';
 import { WorldPicker } from '../components/WorldPicker';
 import { lines } from '../lib/voice';
-import { WORLDS } from '../lib/worlds';
+import { WORLDS, quoteOfDay } from '../lib/worlds';
 import { useImage } from '../lib/useImage';
 import type { Screen } from '../App';
 
@@ -52,7 +52,14 @@ export function Home({ go }: { go: (s: Screen) => void }) {
   return (
     <div className="home">
       <section className="home-creature card">
-        <p className="kicker">{WORLDS[profile.world].name} · {WORLDS[profile.world].home}</p>
+        {WORLDS[profile.world].art ? (
+          <div className="world-banner" style={{ backgroundImage: `url(${WORLDS[profile.world].art!.hero})` }}>
+            <div className="world-banner-text">
+              <p className="world-title">{WORLDS[profile.world].name}</p>
+              <p className="world-motto">{WORLDS[profile.world].motto}</p>
+            </div>
+          </div>
+        ) : <p className="kicker">{WORLDS[profile.world].name} · {WORLDS[profile.world].home}</p>}
         <Bubble tone={tone}>{say}</Bubble>
         <Creature stage={c.stage} world={profile.world} mood={mood} size={260} cosmetics={c.cosmetics} customArtId={c.customArt[c.stage]} />
         <h2 className="creature-name">{c.name ?? (c.stage === 'egg' ? 'Mystery egg' : 'Your creature')}</h2>
@@ -63,6 +70,7 @@ export function Home({ go }: { go: (s: Screen) => void }) {
             <span>{c.stage === 'egg' ? `Hatches after ${config.hatchAfterBlocks} finished blocks` : `${next.gp - c.gp} GP to ${next.name}`}</span>
           </div>
         )}
+        <p className="world-quote">{quoteOfDay(WORLDS[profile.world])}</p>
         <button className="btn ghost small world-move" onClick={() => setWorldOpen(true)}>🧭 Move to another world</button>
         {pinned.length > 0 && <div className="pinned">{pinned.map((g) => <PinnedArt key={g.id} id={g.id} />)}</div>}
       </section>
