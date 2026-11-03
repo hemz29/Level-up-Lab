@@ -5,9 +5,12 @@ import { isValidMistakeNote } from '../engine/insights';
 import { play } from '../lib/sound';
 import { lines } from '../lib/voice';
 import { Modal } from './Modal';
+import { Creature } from './Creature';
 
 export function MistakeLogger({ subjectId, onClose }: { subjectId?: string; onClose: () => void }) {
   const subjects = useStore((s) => s.subjects);
+  const creature = useStore((s) => s.creature);
+  const world = useStore((s) => s.profile?.world ?? 'emberwick');
   const logMistake = useStore((s) => s.logMistake);
   const [subject, setSubject] = useState(subjectId ?? subjects[0]?.id);
   const [cat, setCat] = useState<string>();
@@ -18,7 +21,9 @@ export function MistakeLogger({ subjectId, onClose }: { subjectId?: string; onCl
   if (done) {
     return (
       <Modal title="Mistake caught!" onClose={onClose}>
-        <div className="sparkle-burst" aria-hidden="true">✦ ✧ ✦</div>
+        {creature.stage === 'egg'
+          ? <div className="sparkle-burst" aria-hidden="true">✦ ✧ ✦</div>
+          : <Creature stage={creature.stage} world={world} mood="radiant" size={150} cosmetics={creature.cosmetics} customArtId={creature.customArt[creature.stage]} excited />}
         <p className="big">{done}</p>
         <button className="btn primary" onClick={onClose} autoFocus>Back to work</button>
       </Modal>

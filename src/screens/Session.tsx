@@ -442,6 +442,7 @@ function Break() {
       <div className="timer-ring break" style={{ '--pct': 1 - Math.max(0, remaining) / (config.blocks.breakMinutes * 60) } as React.CSSProperties}>
         <div className="timer-inner"><span className="timer-time">{fmt(remaining)}</span><span className="muted">{remaining > 0 ? 'Rest' : "Break's over"}</span></div>
       </div>
+      {s.creature.stage !== 'egg' && <Creature stage={s.creature.stage} world={s.profile!.world} mood="radiant" size={130} cosmetics={s.creature.cosmetics} customArtId={s.creature.customArt[s.creature.stage]} excited />}
       <p>{lines.breakTime}</p>
       <p className="muted small">Block saved. +{config.gp.block} GP for your creature.</p>
       <button className="btn primary big" onClick={s.endBreak}>{remaining > 0 ? "I'm ready, carry on" : 'Back to my session'}</button>
@@ -535,7 +536,7 @@ function WrapUp({ onBack, go }: { onBack: () => void; go: (s: Screen) => void })
   return (
     <div className="page">
       <div className="launch-head">
-        <Creature stage={s.creature.stage} world={s.profile!.world} mood="radiant" size={150} cosmetics={s.creature.cosmetics} customArtId={s.creature.customArt[s.creature.stage]} />
+        <Creature stage={s.creature.stage} world={s.profile!.world} mood="radiant" size={150} cosmetics={s.creature.cosmetics} customArtId={s.creature.customArt[s.creature.stage]} excited />
         <Bubble tone="cheer">{lines.wrapUp(s.profile!.name)}</Bubble>
       </div>
       <div className="card">

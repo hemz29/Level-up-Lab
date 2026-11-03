@@ -1,4 +1,5 @@
-import { useId } from 'react';
+import { useId, useState } from 'react';
+import { play } from '../lib/sound';
 import type { Mood, StageId, WorldId } from '../types';
 import { WORLDS } from '../lib/worlds';
 import { useImage } from '../lib/useImage';
@@ -12,6 +13,8 @@ interface Props {
   customArtId?: string;
   wobble?: boolean;
   cracks?: number; // 0-3, for the hatch sequence
+  excited?: boolean; // jump for joy (block done, evolution, mistake caught)
+  onTap?: () => void; // makes the creature tappable (hop + sparkles)
 }
 
 /** Per-stage proportions: young creatures have bigger heads and ears, older ones fuller tails and manes. */
@@ -27,7 +30,7 @@ const STAGE = {
  * The creature, drawn to match the world's theme art (original design). Raaga can replace any
  * stage with her own drawing from the art room; the egg uses the world's painted egg.
  */
-export function Creature({ stage, world, mood = 'content', size = 220, cosmetics = [], customArtId, wobble, cracks = 0 }: Props) {
+export function Creature({ stage, world, mood = 'content', size = 220, cosmetics = [], customArtId, wobble, cracks = 0, excited, onTap }: Props) {
   const custom = useImage(customArtId);
   const w = WORLDS[world];
   const asleep = mood === 'paused' || mood === 'sleepy';
@@ -74,6 +77,9 @@ export function Creature({ stage, world, mood = 'content', size = 220, cosmetics
       </svg>
     );
   }
+
+  const art = w.creatureArt?.[stage];
+  if (art) return <PaintedCreature src={asleep ? art.sleepy : art.happy} stage={stage} world={world} asleep={asleep} boost={!!art.boost} size={size} excited={excited} onTap={onTap} />;
 
   const c = w.creature;
   const st = STAGE[stage];
@@ -191,5 +197,38 @@ export function Creature({ stage, world, mood = 'content', size = 220, cosmetics
       </g>
       {asleep && <text x="150" y="44" className="zzz-svg">z z z</text>}
     </svg>
+  );
+}
+
+const SPARKS = Array.from({ length: 10 }, (_, i) => i);
+
+/** Painted creature art, brought to life: breathing, floating motes, tap-to-hop, sleepy curl and joyful jumps. */
+function PaintedCreature({ src, stage, world, asleep, boost, size, excited, onTap }: {
+  src: string; stage: StageId; world: WorldId; asleep: boolean; boost: boolean; size: number; excited?: boolean; onTap?: () => void;
+}) {
+  const [hop, setHop] = useState(0);
+  const tap = () => {
+    if (!onTap) return;
+    setHop((h) => h + 1);
+    play('sparkle');
+    onTap();
+  };
+  const wide = stage === 'mythic' && !asleep;
+  return (
+    <div
+      className={`painted-creature world-${world} stage-${stage} ${asleep ? 'is-asleep' : 'is-awake'} ${boost ? 'boost' : ''} ${excited ? 'is-excited' : ''} ${onTap ? 'tappable' : ''}`}
+      style={{ width: wide ? size * 1.25 : size, height: size }}
+      onClick={tap}
+      role={onTap ? 'button' : 'img'}
+      tabIndex={onTap ? 0 : undefined}
+      onKeyDown={(e) => { if (onTap && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); tap(); } }}
+      aria-label={asleep ? 'Your creature, sleeping' : onTap ? 'Your creature. Tap to say hello' : 'Your creature'}
+    >
+      <span className="pc-aura" aria-hidden="true" />
+      {!asleep && <span className="pc-motes" aria-hidden="true">{SPARKS.map((i) => <i key={i} style={{ '--i': i } as React.CSSProperties} />)}</span>}
+      <img key={hop} src={src} alt="" draggable={false} className={`pc-img ${hop ? 'hop' : ''}`} />
+      {hop > 0 && <span key={`b${hop}`} className="pc-burst" aria-hidden="true">{SPARKS.map((i) => <i key={i} style={{ '--i': i } as React.CSSProperties} />)}</span>}
+      {asleep && <span className="pc-zzz" aria-hidden="true"><b>z</b><b>z</b><b>Z</b></span>}
+    </div>
   );
 }

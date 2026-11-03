@@ -37,5 +37,14 @@ export const lines = {
   reportReminder: (who: string) => `${who} hasn't heard about today yet. Want to send the report?`,
   reportReminderPast: (who: string) => `${who} hasn't heard about our last study day yet. Shall we send it now?`,
   reportSent: 'Sent! I added a little sparkle to it.',
+  tap: [
+    'Hehe, that tickles!',
+    'Did you know? Brushing up a little every day beats cramming.',
+    'I feel stronger every time you finish a block.',
+    'Shall we catch a sneaky mistake today?',
+    'I wonder what I will look like when I grow up…',
+    'Your notes are my favourite treasure.',
+    'Boop! Ready when you are.',
+  ],
   lightDay: 'A light day! One cosy block and three good points. It still counts, I promise.',
 };

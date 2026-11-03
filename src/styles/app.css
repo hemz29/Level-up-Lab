@@ -548,3 +548,55 @@ main { max-width: 1180px; margin: 0 auto; padding: 24px; }
 .world-card.has-art { background-position: center top; background-size: 100% auto; background-repeat: no-repeat; background-color: #0e0b1e; }
 .modal .world-card.has-art { background-size: cover; }
 .world-card:not(.has-art) .world-motto, [data-world='drift'] .world-motto { text-shadow: none; }
+
+/* ---------- painted creatures ---------- */
+.painted-creature { position: relative; margin: 6px auto; display: flex; align-items: flex-end; justify-content: center; --glow-c: rgba(160, 190, 255, 0.55); }
+.painted-creature.world-lumenwood { --glow-c: rgba(150, 190, 255, 0.6); }
+.painted-creature.world-emberwick { --glow-c: rgba(255, 180, 90, 0.55); }
+.painted-creature.tappable { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.painted-creature.tappable:focus-visible { outline: 3px solid var(--accent); outline-offset: 6px; border-radius: 24px; }
+.pc-img { position: relative; z-index: 2; max-width: 100%; max-height: 100%; object-fit: contain; user-select: none; transform-origin: 50% 100%; filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.35)) drop-shadow(0 0 18px var(--glow-c)); animation: pc-breathe 3.6s ease-in-out infinite; }
+.is-asleep .pc-img { animation: pc-sleep 5s ease-in-out infinite; filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.35)) drop-shadow(0 0 10px var(--glow-c)) saturate(0.9); }
+.pc-img.hop { animation: pc-hop 0.7s cubic-bezier(.3, 1.6, .5, 1), pc-breathe 3.6s ease-in-out 0.7s infinite; }
+.is-excited .pc-img { animation: pc-jump 0.9s cubic-bezier(.3, 1.4, .5, 1) 3, pc-breathe 3.6s ease-in-out 2.7s infinite; }
+@keyframes pc-breathe { 0%, 100% { transform: translateY(0) scale(1, 1); } 50% { transform: translateY(-5px) scale(1.012, 0.992); } }
+@keyframes pc-sleep { 0%, 100% { transform: scale(1, 1); } 50% { transform: scale(1.015, 0.975); } }
+@keyframes pc-hop { 0% { transform: translateY(0) scale(1, 1); } 25% { transform: translateY(0) scale(1.06, 0.9); } 55% { transform: translateY(-34px) scale(0.96, 1.05); } 80% { transform: translateY(0) scale(1.04, 0.95); } 100% { transform: translateY(0) scale(1, 1); } }
+@keyframes pc-jump { 0% { transform: translateY(0) rotate(0); } 20% { transform: translateY(0) scale(1.06, 0.9); } 50% { transform: translateY(-44px) rotate(-4deg); } 80% { transform: translateY(0) scale(1.04, 0.95); } 100% { transform: translateY(0) rotate(0); } }
+.pc-aura { position: absolute; z-index: 1; left: 50%; bottom: 8%; width: 86%; aspect-ratio: 1; transform: translateX(-50%); border-radius: 50%; background: radial-gradient(circle, var(--glow-c) 0%, transparent 62%); opacity: 0.55; animation: pc-aura 4s ease-in-out infinite; }
+.is-asleep .pc-aura { opacity: 0.25; animation-duration: 6s; }
+.boost .pc-aura, .stage-mythic .pc-aura { opacity: 0.85; width: 110%; }
+.stage-mythic .pc-aura { background: radial-gradient(circle, rgba(200, 230, 255, 0.75) 0%, var(--glow-c) 35%, transparent 66%); }
+.boost .pc-img { filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.35)) drop-shadow(0 0 26px var(--glow-c)) drop-shadow(0 0 6px rgba(255, 255, 255, 0.6)); }
+@keyframes pc-aura { 0%, 100% { transform: translateX(-50%) scale(0.94); opacity: 0.45; } 50% { transform: translateX(-50%) scale(1.06); opacity: 0.7; } }
+.pc-motes { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
+.pc-motes i { position: absolute; bottom: 12%; left: calc(14% + var(--i) * 8%); width: 5px; height: 5px; border-radius: 50%; background: #fff; box-shadow: 0 0 8px 2px var(--glow-c); opacity: 0; animation: pc-mote 5s ease-in-out infinite; animation-delay: calc(var(--i) * -0.55s); }
+.stage-mythic .pc-motes i, .boost .pc-motes i { width: 6px; height: 6px; }
+@keyframes pc-mote { 0% { transform: translateY(0) scale(0.6); opacity: 0; } 20% { opacity: 0.95; } 100% { transform: translateY(-160px) translateX(calc((var(--i) - 5) * 4px)) scale(1.1); opacity: 0; } }
+.pc-burst { position: absolute; left: 50%; top: 40%; z-index: 4; pointer-events: none; }
+.pc-burst i { position: absolute; width: 8px; height: 8px; border-radius: 50%; background: #fff; box-shadow: 0 0 10px 3px var(--glow-c); animation: pc-burst 0.8s ease-out forwards; --a: calc(var(--i) * 36deg); }
+@keyframes pc-burst { from { transform: rotate(var(--a)) translateY(0) scale(1); opacity: 1; } to { transform: rotate(var(--a)) translateY(-90px) scale(0.2); opacity: 0; } }
+.pc-zzz { position: absolute; z-index: 4; right: 10%; top: 4%; font-family: var(--font-display); font-weight: 700; color: var(--accent); pointer-events: none; }
+.pc-zzz b { display: inline-block; opacity: 0; animation: pc-z 3s ease-in-out infinite; font-size: 1.1rem; }
+.pc-zzz b:nth-child(2) { animation-delay: 0.6s; font-size: 1.35rem; }
+.pc-zzz b:nth-child(3) { animation-delay: 1.2s; font-size: 1.7rem; }
+@keyframes pc-z { 0% { transform: translate(0, 6px); opacity: 0; } 30% { opacity: 1; } 100% { transform: translate(10px, -26px); opacity: 0; } }
+
+/* journey: stages reached + mystery silhouettes of what's next */
+.journey { display: flex; gap: 8px; justify-content: center; margin: 12px 0 2px; flex-wrap: wrap; }
+.journey-step { width: 58px; display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 0.68rem; color: var(--muted); }
+.journey-thumb { width: 58px; height: 58px; border-radius: 14px; background: var(--surface2); border: 1.5px solid var(--line); display: grid; place-items: center; overflow: hidden; position: relative; }
+.journey-thumb img { max-width: 88%; max-height: 88%; object-fit: contain; }
+.journey-step.current .journey-thumb { border-color: var(--accent); box-shadow: 0 0 14px var(--glow); }
+.journey-step.next .journey-thumb img { filter: brightness(0) drop-shadow(0 0 6px var(--glow)); opacity: 0.85; }
+.journey-step.next .journey-thumb::after { content: '?'; position: absolute; font-family: var(--font-display); font-weight: 700; font-size: 1.4rem; color: var(--accent); text-shadow: 0 0 8px var(--glow); }
+.journey-step.locked .journey-thumb img { filter: brightness(0); opacity: 0.25; }
+.journey-step.next span { color: var(--accent); font-weight: 600; }
+
+/* evolution: old form glows white, flash, new form revealed */
+.evolve-stage { position: relative; display: grid; place-items: center; min-height: 280px; }
+.evolve-glow { animation: evolve-glow 2.6s ease-in forwards; }
+@keyframes evolve-glow { 0% { filter: brightness(1); transform: scale(1); } 60% { filter: brightness(2.2) saturate(0.4); transform: scale(1.06); } 100% { filter: brightness(6) saturate(0); transform: scale(1.12); opacity: 0.2; } }
+.evolve-reveal { animation: evolve-reveal 0.9s cubic-bezier(.3, 1.4, .5, 1) both; }
+@keyframes evolve-reveal { from { transform: scale(0.6); opacity: 0; filter: brightness(3); } to { transform: scale(1); opacity: 1; filter: brightness(1); } }
+@media (prefers-reduced-motion: reduce) { .pc-motes, .pc-burst, .pc-zzz { display: none; } }

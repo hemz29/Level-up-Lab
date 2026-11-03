@@ -14,6 +14,7 @@ import { TraitWheel } from '../components/TraitWheel';
 import { MistakeLogger } from '../components/MistakeLogger';
 import { FeedbackCard } from '../components/FeedbackCard';
 import { WorldPicker } from '../components/WorldPicker';
+import { Journey } from '../components/Journey';
 import { lines } from '../lib/voice';
 import { WORLDS, quoteOfDay } from '../lib/worlds';
 import { useImage } from '../lib/useImage';
@@ -36,6 +37,7 @@ export function Home({ go }: { go: (s: Screen) => void }) {
   const toTest = daysToTest(s, today);
   const [mistakeOpen, setMistakeOpen] = useState(false);
   const [worldOpen, setWorldOpen] = useState(false);
+  const [tapLine, setTapLine] = useState<string>();
   const pinned = s.gallery.filter((g) => g.pinned).slice(0, 3);
   const planToday = s.plan.days[today] ?? [];
   const careful = Object.values(s.sessions).reduce((a, x) => a + x.briefingsDone, 0);
@@ -44,8 +46,11 @@ export function Home({ go }: { go: (s: Screen) => void }) {
 
   let say = c.stage === 'egg' ? lines.eggGreet(profile.name) : lines.greet(profile.name, mood);
   let tone: 'normal' | 'nudge' | 'cheer' = 'normal';
-  if (unsentPast) { say = lines.reportReminderPast(profile.parentLabel); tone = 'nudge'; }
+  if (s.settings.paused) { /* resting: no reminders */ }
+  else if (unsentPast) { say = lines.reportReminderPast(profile.parentLabel); tone = 'nudge'; }
   else if (session?.blockIds.length && !session.reportSent && gate.passed) { say = lines.reportReminder(profile.parentLabel); tone = 'nudge'; }
+
+  if (tapLine) { say = tapLine; tone = 'cheer'; }
 
   const studied = (session?.blockIds.length ?? 0) > 0;
 
@@ -61,7 +66,8 @@ export function Home({ go }: { go: (s: Screen) => void }) {
           </div>
         ) : <p className="kicker">{WORLDS[profile.world].name} · {WORLDS[profile.world].home}</p>}
         <Bubble tone={tone}>{say}</Bubble>
-        <Creature stage={c.stage} world={profile.world} mood={mood} size={260} cosmetics={c.cosmetics} customArtId={c.customArt[c.stage]} />
+        <Creature stage={c.stage} world={profile.world} mood={mood} size={260} cosmetics={c.cosmetics} customArtId={c.customArt[c.stage]}
+          onTap={c.stage === 'egg' ? undefined : () => setTapLine(lines.tap[Math.floor(Math.random() * lines.tap.length)])} />
         <h2 className="creature-name">{c.name ?? (c.stage === 'egg' ? 'Mystery egg' : 'Your creature')}</h2>
         <p className="muted">{config.stages.find((x) => x.id === c.stage)?.name} · {MOOD_LABEL[mood]} · {c.gp} GP</p>
         {next && (
@@ -70,6 +76,7 @@ export function Home({ go }: { go: (s: Screen) => void }) {
             <span>{c.stage === 'egg' ? `Hatches after ${config.hatchAfterBlocks} finished blocks` : `${next.gp - c.gp} GP to ${next.name}`}</span>
           </div>
         )}
+        {c.stage !== 'egg' && <Journey world={profile.world} stage={c.stage} />}
         <p className="world-quote">{quoteOfDay(WORLDS[profile.world])}</p>
         <button className="btn ghost small world-move" onClick={() => setWorldOpen(true)}>🧭 Move to another world</button>
         {pinned.length > 0 && <div className="pinned">{pinned.map((g) => <PinnedArt key={g.id} id={g.id} />)}</div>}

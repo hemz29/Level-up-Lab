@@ -1,4 +1,4 @@
-import type { WorldId } from '../types';
+import type { StageId, WorldId } from '../types';
 
 export interface CreaturePalette {
   fur: string; furDark: string; belly: string; earInner: string;
@@ -19,6 +19,8 @@ export interface World {
   art?: { hero: string; card: string; bg: string; egg: string };
   palette: { body: string; belly: string; accent: string; egg: string; eggSpots: string };
   creature: CreaturePalette;
+  /** Painted creature art per stage (happy + sleepy). Stages without art fall back to the drawn creature. */
+  creatureArt?: Partial<Record<Exclude<StageId, 'egg'>, { happy: string; sleepy: string; boost?: boolean }>>;
 }
 
 export const WORLDS: Record<WorldId, World> = {
@@ -47,6 +49,14 @@ export const WORLDS: Record<WorldId, World> = {
     art: { hero: '/worlds/lumenwood-hero.webp', card: '/worlds/lumenwood-card.webp', bg: '/worlds/lumenwood-bg.webp', egg: '/worlds/lumenwood-egg.webp' },
     palette: { body: '#7d84e6', belly: '#e3e6ff', accent: '#3b3f9e', egg: '#e9e4ff', eggSpots: '#9fb0ff' },
     creature: { fur: '#7d84e6', furDark: '#4b4aa8', belly: '#e6e8ff', earInner: '#b9a8ff', eye: '#1c1840', iris: '#8fe3ff', glow: '#9fd8ff', tailTip: '#f4f5ff', mark: '#9ff0ff', markShape: 'leaf', glowFur: true },
+    creatureArt: {
+      hatchling: { happy: '/creatures/lumenwood-hatchling-happy.webp', sleepy: '/creatures/lumenwood-hatchling-sleepy.webp' },
+      juvenile: { happy: '/creatures/lumenwood-juvenile-happy.webp', sleepy: '/creatures/lumenwood-juvenile-sleepy.webp' },
+      teen: { happy: '/creatures/lumenwood-teen-happy.webp', sleepy: '/creatures/lumenwood-teen-sleepy.webp' },
+      // no adult art yet: the teen art with a stronger glow stands in
+      adult: { happy: '/creatures/lumenwood-teen-happy.webp', sleepy: '/creatures/lumenwood-teen-sleepy.webp', boost: true },
+      mythic: { happy: '/creatures/lumenwood-mythic-happy.webp', sleepy: '/creatures/lumenwood-mythic-sleepy.webp' },
+    },
   },
   drift: {
     id: 'drift',

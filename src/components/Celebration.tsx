@@ -13,6 +13,7 @@ export function Celebration() {
   const [step, setStep] = useState(0);
   const [name, setName] = useState('');
   const kind = c.pendingCelebration;
+  const [evo, setEvo] = useState(0); // 0 = old form glowing, 1 = flash, 2 = new form revealed
 
   useEffect(() => {
     if (kind !== 'hatch') return;
@@ -27,7 +28,14 @@ export function Celebration() {
   }, [kind]);
 
   useEffect(() => {
-    if (kind && kind !== 'hatch') { play('unlock'); setTimeout(() => play('sparkle'), 500); }
+    if (!kind || kind === 'hatch') return;
+    setEvo(0);
+    play('unlock');
+    const timers = [
+      setTimeout(() => setEvo(1), 2400),
+      setTimeout(() => { setEvo(2); play('hatch'); }, 2800),
+    ];
+    return () => timers.forEach(clearTimeout);
   }, [kind]);
 
   if (!kind) return null;
@@ -47,7 +55,7 @@ export function Celebration() {
             <>
               <div className="sparkles" aria-hidden="true">{Array.from({ length: 16 }, (_, i) => <span key={i} style={{ '--i': i } as React.CSSProperties} />)}</div>
               <p className="celebrate-kicker">It hatched!</p>
-              <Creature stage="hatchling" world={world} mood="radiant" size={260} customArtId={c.customArt.hatchling} />
+              <Creature stage="hatchling" world={world} mood="radiant" size={260} customArtId={c.customArt.hatchling} excited />
               <h2>Your creature is here, {s.profile?.name}.</h2>
               <p>It hatched because you showed up and did the work. The art room is now open!</p>
               <form className="row" onSubmit={(e) => { e.preventDefault(); if (name.trim()) { s.nameCreature(name.trim()); s.ackCelebration(); } }}>
@@ -62,15 +70,33 @@ export function Celebration() {
   }
 
   const stage = config.stages.find((x) => x.id === kind);
+  const prev = config.stages[config.stages.findIndex((x) => x.id === kind) - 1];
   return (
     <div className="overlay celebrate">
+      <div className={`flash ${evo === 1 ? 'on' : ''}`} />
       <div className="celebrate-card">
-        <div className="sparkles" aria-hidden="true">{Array.from({ length: 16 }, (_, i) => <span key={i} style={{ '--i': i } as React.CSSProperties} />)}</div>
-        <p className="celebrate-kicker">Evolution!</p>
-        <Creature stage={kind} world={world} mood="radiant" size={260} cosmetics={c.cosmetics} customArtId={c.customArt[kind]} />
-        <h2>{c.name ?? 'Your creature'} is now a {stage?.name}!</h2>
-        <p>Weeks of careful work did this. New brushes are waiting in the art room.</p>
-        <button className="btn primary" onClick={s.ackCelebration}>Amazing!</button>
+        {evo < 2 ? (
+          <>
+            <p className="celebrate-kicker">Something is changing…</p>
+            <div className="evolve-stage">
+              <div className="evolve-glow">
+                <Creature stage={prev.id} world={world} mood="radiant" size={240} cosmetics={c.cosmetics} customArtId={c.customArt[prev.id]} />
+              </div>
+            </div>
+            <p className="muted">{c.name ?? 'Your creature'} is glowing brighter and brighter…</p>
+          </>
+        ) : (
+          <>
+            <div className="sparkles" aria-hidden="true">{Array.from({ length: 16 }, (_, i) => <span key={i} style={{ '--i': i } as React.CSSProperties} />)}</div>
+            <p className="celebrate-kicker">Evolution!</p>
+            <div className="evolve-stage evolve-reveal">
+              <Creature stage={kind} world={world} mood="radiant" size={260} cosmetics={c.cosmetics} customArtId={c.customArt[kind]} excited />
+            </div>
+            <h2>{c.name ?? 'Your creature'} is now a {stage?.name}!</h2>
+            <p>Weeks of careful work did this. New brushes are waiting in the art room.</p>
+            <button className="btn primary" onClick={s.ackCelebration} autoFocus>Amazing!</button>
+          </>
+        )}
       </div>
     </div>
   );
