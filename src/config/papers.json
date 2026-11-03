@@ -1,0 +1,74 @@
+{
+  "_note": "PROVISIONAL paper layouts (ICSE-style). Replace with the school's real format once a sample paper is available. Each section lists numbered questions; marksEach x count must add up to the paper total.",
+  "papers": [
+    {
+      "id": "practice",
+      "title": "Practice Worksheet",
+      "minutes": null,
+      "answerSpace": true,
+      "sections": [
+        { "title": "Section A", "questions": [
+          { "kind": "pick", "types": ["mcq"], "heading": "Choose the correct answer from the options given.", "count": 6, "marksEach": 1 },
+          { "kind": "pick", "types": ["fill"], "heading": "Fill in the blanks.", "count": 4, "marksEach": 1 },
+          { "kind": "pick", "types": ["name"], "heading": "Name the following.", "count": 4, "marksEach": 1 }
+        ] },
+        { "title": "Section B", "questions": [
+          { "kind": "pick", "types": ["reason"], "heading": "Give reasons for the following.", "count": 2, "marksEach": 2 },
+          { "kind": "map", "mode": "identify", "heading": "Identify the features marked A–D on the outline map of South America.", "count": 4, "marksEach": 1 }
+        ] }
+      ]
+    },
+    {
+      "id": "unit-test",
+      "title": "Unit Test",
+      "minutes": 45,
+      "answerSpace": false,
+      "sections": [
+        { "title": "Section A", "questions": [
+          { "kind": "pick", "types": ["mcq"], "heading": "Choose the correct answer from the options given.", "count": 5, "marksEach": 1 },
+          { "kind": "pick", "types": ["fill", "name"], "heading": "Fill in the blanks / Name the following.", "count": 5, "marksEach": 1 }
+        ] },
+        { "title": "Section B", "questions": [
+          { "kind": "pick", "types": ["reason", "difference", "short"], "heading": "Answer the following briefly.", "count": 3, "marksEach": 2 },
+          { "kind": "pick", "types": ["long"], "heading": "Answer the following in detail.", "count": 1, "marksEach": 4 }
+        ] },
+        { "title": "Section C · Map work", "questions": [
+          { "kind": "map", "mode": "mark", "heading": "On the outline map of South America provided, mark and name the following.", "count": 5, "marksEach": 1 }
+        ] }
+      ]
+    },
+    {
+      "id": "half-yearly",
+      "title": "Half-Yearly Examination",
+      "minutes": 120,
+      "answerSpace": false,
+      "sections": "@exam80"
+    },
+    {
+      "id": "annual",
+      "title": "Annual Examination",
+      "minutes": 120,
+      "answerSpace": false,
+      "sections": "@exam80"
+    }
+  ],
+  "layouts": {
+    "exam80": [
+      { "title": "Section A (40 marks) · Attempt all questions", "questions": [
+        { "kind": "pick", "types": ["mcq"], "heading": "Choose the correct answer from the options given.", "count": 10, "marksEach": 1 },
+        { "kind": "pick", "types": ["fill"], "heading": "Fill in the blanks.", "count": 5, "marksEach": 1 },
+        { "kind": "pick", "types": ["name"], "heading": "Name the following.", "count": 5, "marksEach": 1 },
+        { "kind": "match", "heading": "Match the following.", "count": 5, "marksEach": 1 },
+        { "kind": "pick", "types": ["define"], "heading": "Explain the following terms.", "count": 5, "marksEach": 1 },
+        { "kind": "pick", "types": ["reason"], "heading": "Give reasons for the following.", "count": 5, "marksEach": 2 }
+      ] },
+      { "title": "Section B (30 marks) · Attempt all questions", "questions": [
+        { "kind": "structured", "heading": "", "count": 5, "marks": 6 }
+      ] },
+      { "title": "Section C (10 marks) · Map work", "questions": [
+        { "kind": "map", "mode": "identify", "heading": "Identify the features marked A–E on the outline map of South America.", "count": 5, "marksEach": 1 },
+        { "kind": "map", "mode": "mark", "heading": "On the same map, mark and name the following.", "count": 5, "marksEach": 1 }
+      ] }
+    ]
+  }
+}

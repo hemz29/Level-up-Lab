@@ -54,7 +54,7 @@ export function Admin({ onBack }: { onBack: () => void }) {
             <tr>
               <th>Child</th><th>Parent</th><th>Joined</th><th>Last studied</th><th>This week</th><th>Days 7 / 30</th>
               <th>Minutes (7d / total)</th><th>Blocks</th><th>Consistency</th><th>Recall: 1st week → now</th>
-              <th>Mistakes caught</th><th>Creature</th><th>Reports</th><th>Helping?</th>
+              <th>Mistakes caught</th><th>Test papers (avg)</th><th>Creature</th><th>Reports</th><th>Helping?</th>
             </tr>
           </thead>
           <tbody>
@@ -76,13 +76,14 @@ export function Admin({ onBack }: { onBack: () => void }) {
                   <td>{s ? `${s.consistencyActive} of 7` : '–'}</td>
                   <td>{s ? `${pct(s.recallGotRateFirstWeek)} → ${pct(s.recallGotRateLast7)}` : '–'}</td>
                   <td>{s ? `${s.mistakesCaught}${top ? ` (mostly ${catLabel(top[0]).toLowerCase()})` : ''}` : '–'}</td>
+                  <td>{s?.papersCreated ? `${s.papersCreated}${s.avgPaperScore !== null && s.avgPaperScore !== undefined ? ` (${pct(s.avgPaperScore)})` : ''}` : '–'}</td>
                   <td>{s ? `${config.stages.find((x) => x.id === s.stage)?.name ?? s.stage}, ${s.gp} GP` : '–'}</td>
                   <td>{s?.reportsSent ?? '–'}</td>
                   <td>{fb ? `${FEEDBACK[fb.rating]} ${day(fb.weekStart)}` : '–'}</td>
                 </tr>
               );
             })}
-            {!kids.length && <tr><td colSpan={14} className="muted">No children yet.</td></tr>}
+            {!kids.length && <tr><td colSpan={15} className="muted">No children yet.</td></tr>}
           </tbody>
         </table>
       </div>

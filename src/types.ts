@@ -132,6 +132,7 @@ export interface ActiveBlock {
 
 export interface Settings {
   muted: boolean;
+  schoolName?: string; // printed on worksheets; stays in the family's own data
   parentPinHash?: string;
   paused: boolean;
   pausedDays: DateKey[];
@@ -152,6 +153,19 @@ export interface GalleryItem {
   pinned: boolean;
 }
 
+/** A worksheet or test paper the child created; regenerated from its seed when reopened. */
+export interface SavedPaper {
+  id: string;
+  specId: string;
+  title: string;
+  subject: string;
+  bankIds: string[];
+  seed: number;
+  marks: number;
+  createdAt: string;
+  score?: number;
+}
+
 export interface AppState {
   version: 1;
   profile?: Profile;
@@ -169,5 +183,6 @@ export interface AppState {
   swapStreak: Record<string, number>;
   gallery: GalleryItem[];
   feedbackWeeks: DateKey[]; // weeks the child already answered "is this helping?"
+  papers: SavedPaper[];
   activeBlock?: ActiveBlock;
 }

@@ -18,15 +18,17 @@ import { Insights } from './screens/Insights';
 import { Parent } from './screens/Parent';
 import { Report } from './screens/Report';
 import { Admin } from './screens/Admin';
+import { Worksheets } from './screens/Worksheets';
 import { ChildPicker, Consent, SignIn } from './screens/Auth';
 import { Celebration } from './components/Celebration';
 
-export type Screen = 'home' | 'plan' | 'session' | 'rooms' | 'art' | 'insights' | 'parent' | 'report-past' | 'admin';
+export type Screen = 'home' | 'plan' | 'session' | 'rooms' | 'art' | 'insights' | 'parent' | 'report-past' | 'admin' | 'worksheets';
 
 const NAV: { id: Screen; label: string }[] = [
   { id: 'home', label: 'Home' },
   { id: 'session', label: 'Study' },
   { id: 'plan', label: 'Plan' },
+  { id: 'worksheets', label: 'Worksheets' },
   { id: 'rooms', label: 'Rooms' },
   { id: 'insights', label: 'Notebook' },
 ];
@@ -167,6 +169,7 @@ function AppShell() {
         {screen === 'rooms' && <Rooms go={go} />}
         {screen === 'art' && <ArtRoom go={go} />}
         {screen === 'insights' && <Insights />}
+        {screen === 'worksheets' && <Worksheets />}
         {screen === 'parent' && <Parent go={go} />}
         {screen === 'report-past' && <PastReport go={go} />}
       </main>

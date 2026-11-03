@@ -20,6 +20,7 @@ A laptop-first, installable web app (PWA) that helps school kids build a consist
 | Rewards | 15 min base + bonus block + mistakes + strong recall, with a 40 min daily ceiling and 1-day carry-over. The art studio opens at hatch (brushes, palette, undo/redo, gallery, pin to home, replace the creature art per stage with their drawings) |
 | Light days, swaps, pause | 1 light-day token per week (unused week → bonus GP), avoidance nudge after 3 swaps away from a subject, PIN-protected parent pause, exam-week light-day setting |
 | Report | "Tell Mum how today went": the child sees the exact text, can add a note, and it's emailed to the signed-in parent. Unsent reports make the creature sleepy and it reminds them |
+| Worksheets | Printable Practice Worksheets, 25-mark Unit Tests and 80-mark Half-yearly/Annual papers built from question banks written from the school textbook (page-referenced answer keys, outline-map questions, scores). See [docs/WORKSHEETS.md](docs/WORKSHEETS.md) |
 | Accounts | Parent email sign-in with a code, several children per family, cloud sync with offline support, admin usage dashboard, weekly "is it helping?" check-in, account deletion |
 | Data | Saved to the family's account and on the device. JSON backup/restore and CSV exports in the parent area. No ads, third-party analytics, web fonts or AI |
 
@@ -76,6 +77,8 @@ supabase/schema.sql     Database tables + security rules
 src/components/         Creature art, celebration, trait wheel, mistake logger, PIN gate…
 src/config/config.json  Every tunable value
 src/data/subjects.json  Subjects and chapters (draft)
+src/data/questions/     Chapter question banks (from the textbook) for worksheets
+src/data/maps/          Outline maps (Natural Earth, public domain)
 docs/                   Seed-data workflow and the manual test script
 ```
 

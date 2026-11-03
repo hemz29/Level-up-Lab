@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import type {
+  SavedPaper,
   AppState, BlockLog, DateKey, DaySession, PlannedBlock, PortionStatus, RecallRating, StageId, Subject, Takeaway, WorldId,
 } from '../types';
 import seed from '../data/subjects.json';
@@ -39,6 +40,7 @@ export function initialState(): AppState {
     swapStreak: {},
     gallery: [],
     feedbackWeeks: [],
+    papers: [],
   };
 }
 
@@ -91,6 +93,10 @@ interface Actions {
   togglePin(id: string): void;
   removeGalleryItem(id: string): void;
   markFeedback(weekStart: DateKey): void;
+  savePaper(p: Omit<SavedPaper, 'id' | 'createdAt'>): string;
+  setPaperScore(id: string, score?: number): void;
+  removePaper(id: string): void;
+  setSchoolName(name: string): void;
   dailyHousekeeping(): void;
   replaceAll(s: AppState): void;
   resetAll(): void;
@@ -343,6 +349,14 @@ export const useStore = create<Store>()(
         addGalleryItem: (id) => update((s) => ({ gallery: [{ id, createdAt: new Date().toISOString(), pinned: false }, ...s.gallery] })),
         togglePin: (id) => update((s) => ({ gallery: s.gallery.map((g) => (g.id === id ? { ...g, pinned: !g.pinned } : g)) })),
         removeGalleryItem: (id) => update((s) => ({ gallery: s.gallery.filter((g) => g.id !== id) })),
+        savePaper: (p) => {
+          const id = uid('paper');
+          update((s) => ({ papers: [{ ...p, id, createdAt: new Date().toISOString() }, ...(s.papers ?? [])].slice(0, 100) }));
+          return id;
+        },
+        setPaperScore: (id, score) => update((s) => ({ papers: (s.papers ?? []).map((x) => (x.id === id ? { ...x, score } : x)) })),
+        removePaper: (id) => update((s) => ({ papers: (s.papers ?? []).filter((x) => x.id !== id) })),
+        setSchoolName: (schoolName) => update((s) => ({ settings: { ...s.settings, schoolName } })),
         markFeedback: (weekStart) => update((s) => ({ feedbackWeeks: [...(s.feedbackWeeks ?? []), weekStart] })),
 
         /** Runs on load: keeps pause days frozen and grants the "kept your light token" weekly bonus. */

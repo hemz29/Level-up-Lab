@@ -26,6 +26,9 @@ export interface ChildStats {
   reportsSent: number;
   lightDaysUsed: number;
   planDays: number;
+  papersCreated: number;
+  papersScored: number;
+  avgPaperScore: number | null; // 0..1
 }
 
 export function computeStats(s: AppState, today: DateKey): ChildStats {
@@ -40,6 +43,7 @@ export function computeStats(s: AppState, today: DateKey): ChildStats {
   const startedOn = s.profile?.createdAt.slice(0, 10) ?? null;
   const c = consistency(today, new Set(days), new Set(s.settings.pausedDays), startedOn ?? today);
   const sessions = Object.values(s.sessions);
+  const scored = (s.papers ?? []).filter((p) => typeof p.score === 'number' && p.marks > 0);
   return {
     startedOn,
     lastActive: days.at(-1) ?? null,
@@ -63,5 +67,8 @@ export function computeStats(s: AppState, today: DateKey): ChildStats {
     reportsSent: sessions.filter((x) => x.reportSent).length,
     lightDaysUsed: sessions.filter((x) => x.lightDay).length,
     planDays: Object.keys(s.plan.days).length,
+    papersCreated: (s.papers ?? []).length,
+    papersScored: scored.length,
+    avgPaperScore: scored.length ? Math.round((scored.reduce((a, p) => a + p.score! / p.marks, 0) / scored.length) * 100) / 100 : null,
   };
 }
