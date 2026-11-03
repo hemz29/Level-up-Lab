@@ -79,7 +79,7 @@ export function Creature({ stage, world, mood = 'content', size = 220, cosmetics
   }
 
   const art = w.creatureArt?.[stage];
-  if (art) return <PaintedCreature src={asleep ? art.sleepy : art.happy} stage={stage} world={world} asleep={asleep} boost={!!art.boost} size={size} excited={excited} onTap={onTap} />;
+  if (art) return <PaintedCreature src={asleep ? art.sleepy : excited && art.excited ? art.excited : art.happy} stage={stage} world={world} asleep={asleep} boost={!!art.boost} size={size} excited={excited} onTap={onTap} />;
 
   const c = w.creature;
   const st = STAGE[stage];

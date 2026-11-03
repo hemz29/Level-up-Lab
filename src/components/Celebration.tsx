@@ -55,7 +55,9 @@ export function Celebration() {
             <>
               <div className="sparkles" aria-hidden="true">{Array.from({ length: 16 }, (_, i) => <span key={i} style={{ '--i': i } as React.CSSProperties} />)}</div>
               <p className="celebrate-kicker">It hatched!</p>
-              <Creature stage="hatchling" world={world} mood="radiant" size={260} customArtId={c.customArt.hatchling} excited />
+              {WORLDS[world].hatchArt && !c.customArt.hatchling
+                ? <div className={`painted-creature world-${world} is-excited hatch-peek`} style={{ width: 260, height: 300 }}><span className="pc-aura" /><img className="pc-img" src={WORLDS[world].hatchArt} alt="Your baby creature peeking out of its egg" /></div>
+                : <Creature stage="hatchling" world={world} mood="radiant" size={260} customArtId={c.customArt.hatchling} excited />}
               <h2>Your creature is here, {s.profile?.name}.</h2>
               <p>It hatched because you showed up and did the work. The art room is now open!</p>
               <form className="row" onSubmit={(e) => { e.preventDefault(); if (name.trim()) { s.nameCreature(name.trim()); s.ackCelebration(); } }}>

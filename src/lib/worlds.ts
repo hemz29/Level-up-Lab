@@ -20,7 +20,9 @@ export interface World {
   palette: { body: string; belly: string; accent: string; egg: string; eggSpots: string };
   creature: CreaturePalette;
   /** Painted creature art per stage (happy + sleepy). Stages without art fall back to the drawn creature. */
-  creatureArt?: Partial<Record<Exclude<StageId, 'egg'>, { happy: string; sleepy: string; boost?: boolean }>>;
+  creatureArt?: Partial<Record<Exclude<StageId, 'egg'>, { happy: string; sleepy: string; excited?: string; boost?: boolean }>>;
+  /** The baby peeking out of its cracked egg, shown at the hatch reveal. */
+  hatchArt?: string;
 }
 
 export const WORLDS: Record<WorldId, World> = {
@@ -50,13 +52,13 @@ export const WORLDS: Record<WorldId, World> = {
     palette: { body: '#7d84e6', belly: '#e3e6ff', accent: '#3b3f9e', egg: '#e9e4ff', eggSpots: '#9fb0ff' },
     creature: { fur: '#7d84e6', furDark: '#4b4aa8', belly: '#e6e8ff', earInner: '#b9a8ff', eye: '#1c1840', iris: '#8fe3ff', glow: '#9fd8ff', tailTip: '#f4f5ff', mark: '#9ff0ff', markShape: 'leaf', glowFur: true },
     creatureArt: {
-      hatchling: { happy: '/creatures/lumenwood-hatchling-happy.webp', sleepy: '/creatures/lumenwood-hatchling-sleepy.webp' },
-      juvenile: { happy: '/creatures/lumenwood-juvenile-happy.webp', sleepy: '/creatures/lumenwood-juvenile-sleepy.webp' },
+      hatchling: { happy: '/creatures/lumenwood-hatchling-happy.webp', sleepy: '/creatures/lumenwood-hatchling-sleepy.webp', excited: '/creatures/lumenwood-hatchling-excited.webp' },
+      juvenile: { happy: '/creatures/lumenwood-juvenile-happy.webp', sleepy: '/creatures/lumenwood-juvenile-sleepy.webp', excited: '/creatures/lumenwood-juvenile-excited.webp' },
       teen: { happy: '/creatures/lumenwood-teen-happy.webp', sleepy: '/creatures/lumenwood-teen-sleepy.webp' },
-      // no adult art yet: the teen art with a stronger glow stands in
-      adult: { happy: '/creatures/lumenwood-teen-happy.webp', sleepy: '/creatures/lumenwood-teen-sleepy.webp', boost: true },
+      adult: { happy: '/creatures/lumenwood-adult-happy.webp', sleepy: '/creatures/lumenwood-adult-sleepy.webp', boost: true },
       mythic: { happy: '/creatures/lumenwood-mythic-happy.webp', sleepy: '/creatures/lumenwood-mythic-sleepy.webp' },
     },
+    hatchArt: '/creatures/lumenwood-hatching-egg.webp',
   },
   drift: {
     id: 'drift',
