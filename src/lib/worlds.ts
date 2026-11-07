@@ -36,13 +36,13 @@ export const WORLDS: Record<WorldId, World> = {
     home: 'the lantern terrace',
     eggWord: 'star-dragon egg',
     art: { hero: '/worlds/emberwick-hero.webp', card: '/worlds/emberwick-card.webp', bg: '/worlds/emberwick-bg.webp', egg: '/creatures/emberwick-egg.webp' },
-    // painted star-dragon; sleepy poses not supplied yet, so the happy art rests (dimmed, with floating z's)
+    // painted star-dragon
     creatureArt: {
-      hatchling: { happy: '/creatures/emberwick-hatchling-happy.webp' },
-      juvenile: { happy: '/creatures/emberwick-juvenile-happy.webp' },
-      teen: { happy: '/creatures/emberwick-teen-happy.webp' },
-      adult: { happy: '/creatures/emberwick-adult-happy.webp' },
-      mythic: { happy: '/creatures/emberwick-mythic-happy.webp' },
+      hatchling: { happy: '/creatures/emberwick-hatchling-happy.webp', sleepy: '/creatures/emberwick-hatchling-sleepy.webp' },
+      juvenile: { happy: '/creatures/emberwick-juvenile-happy.webp', sleepy: '/creatures/emberwick-juvenile-sleepy.webp' },
+      teen: { happy: '/creatures/emberwick-teen-happy.webp', sleepy: '/creatures/emberwick-teen-sleepy.webp' },
+      adult: { happy: '/creatures/emberwick-adult-happy.webp', sleepy: '/creatures/emberwick-adult-sleepy.webp' },
+      mythic: { happy: '/creatures/emberwick-mythic-happy.webp', sleepy: '/creatures/emberwick-mythic-sleepy.webp' },
     },
     palette: { body: '#c58b5c', belly: '#f4e2c6', accent: '#7a2e3a', egg: '#f3d9a4', eggSpots: '#b5652e' },
     creature: { fur: '#c58b5c', furDark: '#8a5a3a', belly: '#f6e7cf', earInner: '#e58b6c', eye: '#2a1d14', iris: '#ffb347', glow: '#ffb347', tailTip: '#f6e7cf', mark: '#ffcf6b', markShape: 'star', glowFur: false },
