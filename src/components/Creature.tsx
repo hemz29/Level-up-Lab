@@ -79,7 +79,7 @@ export function Creature({ stage, world, mood = 'content', size = 220, cosmetics
   }
 
   const art = w.creatureArt?.[stage];
-  if (art) return <PaintedCreature src={asleep ? art.sleepy : excited && art.excited ? art.excited : art.happy} stage={stage} world={world} asleep={asleep} boost={!!art.boost} size={size} excited={excited} onTap={onTap} />;
+  if (art) return <PaintedCreature src={asleep ? art.sleepy ?? art.happy : excited && art.excited ? art.excited : art.happy} restingAwakeArt={asleep && !art.sleepy} stage={stage} world={world} asleep={asleep} boost={!!art.boost} size={size} excited={excited} onTap={onTap} />;
 
   const c = w.creature;
   const st = STAGE[stage];
@@ -203,7 +203,8 @@ export function Creature({ stage, world, mood = 'content', size = 220, cosmetics
 const SPARKS = Array.from({ length: 10 }, (_, i) => i);
 
 /** Painted creature art, brought to life: breathing, floating motes, tap-to-hop, sleepy curl and joyful jumps. */
-function PaintedCreature({ src, stage, world, asleep, boost, size, excited, onTap }: {
+function PaintedCreature({ src, stage, world, asleep, boost, size, excited, onTap, restingAwakeArt }: {
+  restingAwakeArt?: boolean;
   src: string; stage: StageId; world: WorldId; asleep: boolean; boost: boolean; size: number; excited?: boolean; onTap?: () => void;
 }) {
   const [hop, setHop] = useState(0);
@@ -216,7 +217,7 @@ function PaintedCreature({ src, stage, world, asleep, boost, size, excited, onTa
   const wide = stage === 'mythic' && !asleep;
   return (
     <div
-      className={`painted-creature world-${world} stage-${stage} ${asleep ? 'is-asleep' : 'is-awake'} ${boost ? 'boost' : ''} ${excited ? 'is-excited' : ''} ${onTap ? 'tappable' : ''}`}
+      className={`painted-creature world-${world} stage-${stage} ${asleep ? 'is-asleep' : 'is-awake'} ${boost ? 'boost' : ''} ${excited ? 'is-excited' : ''} ${onTap ? 'tappable' : ''} ${restingAwakeArt ? 'resting' : ''}`}
       style={{ width: wide ? size * 1.25 : size, height: size }}
       onClick={tap}
       role={onTap ? 'button' : 'img'}

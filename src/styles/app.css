@@ -600,3 +600,6 @@ main { max-width: 1180px; margin: 0 auto; padding: 24px; }
 .evolve-reveal { animation: evolve-reveal 0.9s cubic-bezier(.3, 1.4, .5, 1) both; }
 @keyframes evolve-reveal { from { transform: scale(0.6); opacity: 0; filter: brightness(3); } to { transform: scale(1); opacity: 1; filter: brightness(1); } }
 @media (prefers-reduced-motion: reduce) { .pc-motes, .pc-burst, .pc-zzz { display: none; } }
+.painted-creature.world-emberwick { --glow-c: rgba(120, 220, 255, 0.55); }
+.egg-art.world-emberwick img { filter: drop-shadow(0 0 26px rgba(120, 210, 255, 0.6)); }
+.painted-creature.resting .pc-img { filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.35)) brightness(0.7) saturate(0.7); animation-duration: 6s; }

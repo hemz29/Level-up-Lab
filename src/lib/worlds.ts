@@ -20,7 +20,7 @@ export interface World {
   palette: { body: string; belly: string; accent: string; egg: string; eggSpots: string };
   creature: CreaturePalette;
   /** Painted creature art per stage (happy + sleepy). Stages without art fall back to the drawn creature. */
-  creatureArt?: Partial<Record<Exclude<StageId, 'egg'>, { happy: string; sleepy: string; excited?: string; boost?: boolean }>>;
+  creatureArt?: Partial<Record<Exclude<StageId, 'egg'>, { happy: string; sleepy?: string; excited?: string; boost?: boolean }>>;
   /** The baby peeking out of its cracked egg, shown at the hatch reveal. */
   hatchArt?: string;
 }
@@ -34,8 +34,16 @@ export const WORLDS: Record<WorldId, World> = {
     quotes: ['Discipline creates brighter worlds', 'Knowledge hatches brighter worlds', 'Same lessons, bigger adventures'],
     description: 'A hidden academy of towers and lantern-lit bridges at twilight. The eggs are kept warm on velvet cushions by the fire.',
     home: 'the lantern terrace',
-    eggWord: 'ember-egg',
-    art: { hero: '/worlds/emberwick-hero.webp', card: '/worlds/emberwick-card.webp', bg: '/worlds/emberwick-bg.webp', egg: '/worlds/emberwick-egg.webp' },
+    eggWord: 'star-dragon egg',
+    art: { hero: '/worlds/emberwick-hero.webp', card: '/worlds/emberwick-card.webp', bg: '/worlds/emberwick-bg.webp', egg: '/creatures/emberwick-egg.webp' },
+    // painted star-dragon; sleepy poses not supplied yet, so the happy art rests (dimmed, with floating z's)
+    creatureArt: {
+      hatchling: { happy: '/creatures/emberwick-hatchling-happy.webp' },
+      juvenile: { happy: '/creatures/emberwick-juvenile-happy.webp' },
+      teen: { happy: '/creatures/emberwick-teen-happy.webp' },
+      adult: { happy: '/creatures/emberwick-adult-happy.webp' },
+      mythic: { happy: '/creatures/emberwick-mythic-happy.webp' },
+    },
     palette: { body: '#c58b5c', belly: '#f4e2c6', accent: '#7a2e3a', egg: '#f3d9a4', eggSpots: '#b5652e' },
     creature: { fur: '#c58b5c', furDark: '#8a5a3a', belly: '#f6e7cf', earInner: '#e58b6c', eye: '#2a1d14', iris: '#ffb347', glow: '#ffb347', tailTip: '#f6e7cf', mark: '#ffcf6b', markShape: 'star', glowFur: false },
   },
