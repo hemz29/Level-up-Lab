@@ -71,16 +71,26 @@ export const WORLDS: Record<WorldId, World> = {
   },
   drift: {
     id: 'drift',
-    name: 'The Drift Isles',
-    tagline: 'Adventurous and open',
-    motto: 'Explore · Learn · Hatch · Fly',
-    quotes: ['Small steps, brighter worlds', 'Every bridge starts with one plank'],
-    description: 'Floating islands linked by rope bridges, drifting through a pastel sky.',
-    home: 'the cloud nest',
-    eggWord: 'sky-egg',
-    palette: { body: '#8fa8ff', belly: '#fde7f1', accent: '#5b4bb5', egg: '#fdeaf3', eggSpots: '#a7b8ff' },
-    creature: { fur: '#f1a6c4', furDark: '#c46f93', belly: '#fff1f6', earInner: '#ffc9dc', eye: '#2a2347', iris: '#a7b8ff', glow: '#c9b8ff', tailTip: '#ffffff', mark: '#a7b8ff', markShape: 'cloud', glowFur: false },
+    name: 'Neon Rails',
+    tagline: 'Fast, bright and fun',
+    motto: 'Run · Learn · Hatch · Level Up',
+    quotes: ['Small steps, big wins', 'Every block is a coin in the bank', 'Keep rolling, keep learning', 'One more stop to legendary'],
+    description: 'A sunny city train yard full of colourful graffiti trains, glowing rails and floating coins and gems.',
+    home: 'the train yard',
+    eggWord: 'graffiti egg',
+    art: { hero: '/worlds/drift-hero.webp', card: '/worlds/drift-card.webp', bg: '/worlds/drift-bg.webp', egg: '/creatures/drift-egg.webp' },
+    palette: { body: '#f1f1fb', belly: '#ffffff', accent: '#7b4dd8', egg: '#fdeaf3', eggSpots: '#2fd3c0' },
+    creature: { fur: '#eeeaf8', furDark: '#b9a8e6', belly: '#ffffff', earInner: '#c9b6f3', eye: '#1c2a3a', iris: '#4fe3c1', glow: '#5ff0d8', tailTip: '#ffffff', mark: '#5ff0d8', markShape: 'cloud', glowFur: false },
+    creatureArt: {
+      hatchling: { happy: '/creatures/drift-hatchling-happy.webp', sleepy: '/creatures/drift-hatchling-sleepy.webp', excited: '/creatures/drift-hatchling-excited.webp' },
+      juvenile: { happy: '/creatures/drift-juvenile-happy.webp', sleepy: '/creatures/drift-juvenile-sleepy.webp', excited: '/creatures/drift-juvenile-excited.webp' },
+      teen: { happy: '/creatures/drift-teen-happy.webp', sleepy: '/creatures/drift-teen-sleepy.webp', excited: '/creatures/drift-teen-excited.webp' },
+      adult: { happy: '/creatures/drift-adult-happy.webp', sleepy: '/creatures/drift-adult-sleepy.webp', excited: '/creatures/drift-adult-excited.webp' },
+      mythic: { happy: '/creatures/drift-mythic-happy.webp', sleepy: '/creatures/drift-mythic-sleepy.webp', excited: '/creatures/drift-mythic-excited.webp' },
+    },
+    hatchArt: '/creatures/drift-hatching-egg.webp',
   },
+
 };
 
 /** A quote for today (stable for the day). */

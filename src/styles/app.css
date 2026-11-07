@@ -48,24 +48,23 @@
   color-scheme: dark;
 }
 [data-world='drift'] {
-  --bg: #eef0ff;
-  --bg2: #fdf1f7;
-  --surface: #ffffff;
-  --surface2: #f4f3ff;
-  --fg: #262347;
-  --muted: #5f5b85;
-  --line: #dcd8f5;
-  --accent: #5b4bb5;
+  /* sunny train yard: sky blue, neon teal, electric purple, coin gold */
+  --bg: #e8f2ff;
+  --bg2: #f3eaff;
+  --surface: rgba(255, 255, 255, 0.9);
+  --surface2: rgba(240, 244, 255, 0.95);
+  --fg: #1d2340;
+  --muted: #55607f;
+  --line: #d3dcf2;
+  --accent: #7b4dd8;
   --accent-fg: #ffffff;
-  --accent-soft: #e6e2ff;
-  --good: #1f8a5a;
+  --accent-soft: #ece4ff;
+  --good: #128a6a;
   --bad: #c2412d;
-  --glow: rgba(91, 75, 181, 0.18);
-  --accent2: #e86a9a;
-  --motto: #a8457a;
-  --bg-art: radial-gradient(600px 220px at 15% 10%, rgba(255, 255, 255, 0.9), transparent 70%),
-            radial-gradient(500px 200px at 85% 25%, rgba(255, 255, 255, 0.8), transparent 70%),
-            linear-gradient(180deg, #e3e6ff 0%, #fde7f1 100%);
+  --glow: rgba(47, 211, 192, 0.35);
+  --accent2: #14b8a6;
+  --motto: #8a4fd6;
+  --bg-art: linear-gradient(180deg, rgba(232, 242, 255, 0.72), rgba(243, 234, 255, 0.9)), url('/worlds/drift-bg.webp');
   color-scheme: light;
 }
 
@@ -246,7 +245,6 @@ main { max-width: 1180px; margin: 0 auto; padding: 24px; }
 .world-card:hover { transform: translateY(-3px); }
 .world-card.on { border-color: #fff; box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.25); }
 .world-card p { opacity: 0.92; }
-.world-card.world-drift { background: linear-gradient(160deg, #9ea8ff, #f3a6c8); color: #241f4a; }
 .world-tag { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; opacity: 0.85; }
 
 /* ---------- home ---------- */
@@ -547,7 +545,9 @@ main { max-width: 1180px; margin: 0 auto; padding: 24px; }
 .world-card { display: flex; flex-direction: column; justify-content: flex-end; min-height: 360px; }
 .world-card.has-art { background-position: center top; background-size: 100% auto; background-repeat: no-repeat; background-color: #0e0b1e; }
 .modal .world-card.has-art { background-size: cover; }
-.world-card:not(.has-art) .world-motto, [data-world='drift'] .world-motto { text-shadow: none; }
+.world-card:not(.has-art) .world-motto { text-shadow: none; }
+[data-world='drift'] .world-quote { color: var(--muted); }
+[data-world='drift'] .world-quote::before, [data-world='drift'] .world-quote::after { color: var(--accent); }
 
 /* ---------- painted creatures ---------- */
 .painted-creature { position: relative; margin: 6px auto; display: flex; align-items: flex-end; justify-content: center; --glow-c: rgba(160, 190, 255, 0.55); }
@@ -601,5 +601,7 @@ main { max-width: 1180px; margin: 0 auto; padding: 24px; }
 @keyframes evolve-reveal { from { transform: scale(0.6); opacity: 0; filter: brightness(3); } to { transform: scale(1); opacity: 1; filter: brightness(1); } }
 @media (prefers-reduced-motion: reduce) { .pc-motes, .pc-burst, .pc-zzz { display: none; } }
 .painted-creature.world-emberwick { --glow-c: rgba(120, 220, 255, 0.55); }
+.painted-creature.world-drift { --glow-c: rgba(80, 230, 205, 0.5); }
+.egg-art.world-drift img { filter: drop-shadow(0 0 22px rgba(170, 90, 255, 0.5)); }
 .egg-art.world-emberwick img { filter: drop-shadow(0 0 26px rgba(120, 210, 255, 0.6)); }
 .painted-creature.resting .pc-img { filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.35)) brightness(0.7) saturate(0.7); animation-duration: 6s; }
