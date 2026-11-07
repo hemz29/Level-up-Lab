@@ -24,7 +24,7 @@
   --good: #9bd49b;
   --bad: #ff9c8a;
   --glow: rgba(242, 165, 65, 0.32);
-  --bg-art: linear-gradient(180deg, rgba(18, 15, 40, 0.74), rgba(18, 15, 40, 0.92)), url('/worlds/emberwick-bg.webp');
+  --bg-art: linear-gradient(180deg, rgba(12, 18, 38, 0.72), rgba(12, 18, 38, 0.92)), url('/worlds/emberwick-bg.webp');
   color-scheme: dark;
 }
 [data-world='lumenwood'] {

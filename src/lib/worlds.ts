@@ -32,8 +32,8 @@ export const WORLDS: Record<WorldId, World> = {
     tagline: 'Cosy and mysterious',
     motto: 'Study · Learn · Hatch · Soar',
     quotes: ['Discipline creates brighter worlds', 'Knowledge hatches brighter worlds', 'Same lessons, bigger adventures'],
-    description: 'A hidden academy of towers and lantern-lit bridges at twilight. The eggs are kept warm on velvet cushions by the fire.',
-    home: 'the lantern terrace',
+    description: 'A hidden academy in an old clock tower beside a crystal waterfall, with candlelit windows and ribbons of glowing water in the night sky.',
+    home: 'the waterfall terrace',
     eggWord: 'star-dragon egg',
     art: { hero: '/worlds/emberwick-hero.webp', card: '/worlds/emberwick-card.webp', bg: '/worlds/emberwick-bg.webp', egg: '/creatures/emberwick-egg.webp' },
     // painted star-dragon
