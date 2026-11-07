@@ -8,3 +8,7 @@ dev-dist
 *.log
 seed-photos/
 *.tsbuildinfo
+# raw artwork uploads: the app uses optimised copies in public/
+/*.png
+/*.jpg
+/*.jpeg
