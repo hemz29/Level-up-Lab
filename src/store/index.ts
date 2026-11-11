@@ -294,7 +294,7 @@ export const useStore = create<Store>()(
             const t = takeaways[r.takeawayId];
             if (t && r.rating) takeaways[r.takeawayId] = schedule(t, r.rating, today);
           }
-          const base = { ...s, takeaways, sessions: { ...s.sessions, [today]: { ...session, recallDone: true } } };
+          const base = { ...s, takeaways, sessions: { ...s.sessions, [today]: { ...session, recallDone: true, recallScore: recallScore(session.recall) } } };
           return { ...base, ...withGp(base, config.gp.recall) };
         }),
 

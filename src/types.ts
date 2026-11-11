@@ -95,6 +95,7 @@ export interface DaySession {
   lightDay: boolean;
   recall?: RecallItem[];
   recallDone: boolean;
+  recallScore?: number; // 0..1, saved when the day's recall quiz is completed (for trends)
   reportSent: boolean;
   reportNote?: string;
   briefingsDone: number;

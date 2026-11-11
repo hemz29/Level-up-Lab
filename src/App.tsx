@@ -14,7 +14,7 @@ import { PlanBuilder } from './screens/PlanBuilder';
 import { Session } from './screens/Session';
 import { Rooms } from './screens/Rooms';
 import { ArtRoom } from './screens/ArtRoom';
-import { Insights } from './screens/Insights';
+import { Notebook } from './screens/Notebook';
 import { Parent } from './screens/Parent';
 import { Report } from './screens/Report';
 import { Admin } from './screens/Admin';
@@ -84,7 +84,7 @@ function CloudRoot() {
     if (children && !child) {
       const last = localStorageGet('lastChild');
       const found = children.find((c) => c.id === last);
-      if (found && children.length === 1) setChild(found);
+      if (found) setChild(found);
     }
   }, [children]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -168,7 +168,7 @@ function AppShell() {
         {screen === 'plan' && <PlanBuilder />}
         {screen === 'rooms' && <Rooms go={go} />}
         {screen === 'art' && <ArtRoom go={go} />}
-        {screen === 'insights' && <Insights />}
+        {screen === 'insights' && <Notebook />}
         {screen === 'worksheets' && <Worksheets />}
         {screen === 'parent' && <Parent go={go} />}
         {screen === 'report-past' && <PastReport go={go} />}

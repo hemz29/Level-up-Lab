@@ -1,19 +1,24 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { WorldId } from '../types';
 import { useStore } from '../store';
 import { WORLDS } from '../lib/worlds';
 import { Creature } from '../components/Creature';
 import { play } from '../lib/sound';
+import { useAccount } from '../lib/account';
 
 const GROWN_UPS = ['Mum', 'Dad', 'Amma', 'Papa', 'Grandma', 'Grandpa'];
 
 /** First run for a child. `name` comes from the child profile; in local mode the child types it. */
 export function Setup({ name: givenName }: { name?: string }) {
   const setupProfile = useStore((s) => s.setupProfile);
-  const [step, setStep] = useState(givenName ? 0 : -1);
-  const [world, setWorld] = useState<WorldId>();
-  const [name, setName] = useState(givenName ?? '');
-  const [parentLabel, setParentLabel] = useState('Mum');
+  // answers are remembered on this device as soon as they're given, so a reload never asks again
+  const key = `setupDraft:${useAccount().childId}`;
+  const draft = readDraft(key);
+  const [step, setStep] = useState(givenName ? Math.max(0, draft.step ?? 0) : draft.name ? Math.max(0, draft.step ?? 0) : -1);
+  const [world, setWorld] = useState<WorldId | undefined>(draft.world);
+  const [name, setName] = useState(givenName ?? draft.name ?? '');
+  const [parentLabel, setParentLabel] = useState(draft.parentLabel ?? 'Mum');
+  useEffect(() => { writeDraft(key, { step, world, name: name.trim() || undefined, parentLabel }); }, [key, step, world, name, parentLabel]);
 
   if (step === -1) {
     return (
@@ -80,8 +85,13 @@ export function Setup({ name: givenName }: { name?: string }) {
         <Creature stage="egg" world={world!} wobble size={240} />
         <p className="big">It's warm, and something inside is humming. Finish two study blocks with honest notes and it will hatch.</p>
         <p className="world-quote">{w.quotes[0]}</p>
-        <button className="btn primary big" onClick={() => { setupProfile(name.trim(), world!, parentLabel.trim() || 'Mum'); play('start'); }} autoFocus>Take it to {w.home}</button>
+        <button className="btn primary big" onClick={() => { setupProfile(name.trim(), world!, parentLabel.trim() || 'Mum'); clearDraft(key); play('start'); }} autoFocus>Take it to {w.home}</button>
       </div>
     </div>
   );
 }
+
+interface Draft { step?: number; world?: WorldId; name?: string; parentLabel?: string }
+function readDraft(key: string): Draft { try { return JSON.parse(localStorage.getItem(key) ?? '{}') as Draft; } catch { return {}; } }
+function writeDraft(key: string, d: Draft) { try { localStorage.setItem(key, JSON.stringify(d)); } catch { /* private mode */ } }
+function clearDraft(key: string) { try { localStorage.removeItem(key); } catch { /* private mode */ } }

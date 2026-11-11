@@ -28,7 +28,19 @@ interface Saved { state: AppState; updatedAt: string }
 
 async function readLocal(id: string): Promise<Saved | null> {
   const raw = await kvStorage.getItem(localKey(id));
-  return raw ? (JSON.parse(raw) as Saved) : null;
+  const main = raw ? (JSON.parse(raw) as Saved) : null;
+  const backup = readBackup(id);
+  return backup && (!main || backup.updatedAt > main.updatedAt) ? backup : main;
+}
+
+/** A synchronous copy written as the page closes or reloads (IndexedDB writes can be cut off then). */
+const backupKey = (id: string) => `backup:${id}`;
+function readBackup(id: string): Saved | null {
+  try { const raw = localStorage.getItem(backupKey(id)); return raw ? (JSON.parse(raw) as Saved) : null; } catch { return null; }
+}
+function writeBackup() {
+  if (!activeChild || !useStore.getState().hydrated) return;
+  try { localStorage.setItem(backupKey(activeChild), JSON.stringify({ state: snapshot(), updatedAt: new Date().toISOString() })); } catch { /* full or private mode */ }
 }
 
 export async function openChild(childId: string): Promise<void> {
@@ -52,7 +64,10 @@ export async function openChild(childId: string): Promise<void> {
   useStore.getState().replaceAll(best?.state ?? initialState());
   useStore.setState({ hydrated: true });
   useStore.getState().dailyHousekeeping();
-  unsubscribe = useStore.subscribe(() => schedule());
+  unsubscribe = useStore.subscribe((s, prev) => {
+    // a brand-new profile (name, world) is saved straight away, not after the usual short wait
+    if (s.profile && !prev.profile) void flush(); else schedule();
+  });
   if (dirtyCloud) schedule();
 }
 
@@ -70,6 +85,7 @@ export function flush(): Promise<void> {
   const updatedAt = new Date().toISOString();
   saving = saving.then(async () => {
     await kvStorage.setItem(localKey(id), JSON.stringify({ state, updatedAt }));
+    try { localStorage.removeItem(backupKey(id)); } catch { /* ignore */ }
     if (!cloudEnabled) { setStatus('saved'); return; }
     try {
       await cloud.saveState(id, state, computeStats(state, todayKey()), updatedAt);
@@ -97,7 +113,8 @@ export async function closeChild() {
 if (typeof window !== 'undefined') {
   window.addEventListener('online', () => { if (dirtyCloud && activeChild) void flush(); });
   setInterval(() => { if (dirtyCloud && activeChild && navigator.onLine) void flush(); }, 60000);
-  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden' && activeChild) void flush(); });
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden' && activeChild) { writeBackup(); void flush(); } });
+  window.addEventListener('pagehide', () => { writeBackup(); void flush(); });
 }
 
 export function currentChildId() { return activeChild; }
@@ -125,4 +142,5 @@ export async function eraseActiveChild() {
 
 export async function forgetLocalChild(childId: string) {
   await kvStorage.removeItem(localKey(childId));
+  try { localStorage.removeItem(backupKey(childId)); } catch { /* ignore */ }
 }

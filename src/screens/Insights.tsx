@@ -6,7 +6,7 @@ import { mistakeCounts } from '../engine/insights';
 import { subjectById } from '../store/selectors';
 import { MistakeLogger } from '../components/MistakeLogger';
 
-export function Insights() {
+export function MistakesTab() {
   const s = useStore();
   const today = todayKey();
   const [range, setRange] = useState<'14' | 'all'>('14');
@@ -23,7 +23,7 @@ export function Insights() {
   return (
     <div className="page">
       <div className="row between wrap">
-        <h1>Detective's notebook</h1>
+        <h2>Detective's notebook</h2>
         <button className="btn primary" onClick={() => setOpen(true)}>I caught a mistake</button>
       </div>
       <div className="stats">
