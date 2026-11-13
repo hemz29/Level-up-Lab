@@ -28,6 +28,14 @@ export interface Subject {
   chapters: Chapter[];
 }
 
+/** A school exam (unit test, half-yearly…) with its date and the subjects it covers. */
+export interface Exam {
+  id: string;
+  name: string;
+  date: DateKey;
+  subjectIds: string[] | 'all';
+}
+
 export interface PlannedBlock {
   id: string;
   subjectId: string;
@@ -185,5 +193,6 @@ export interface AppState {
   gallery: GalleryItem[];
   feedbackWeeks: DateKey[]; // weeks the child already answered "is this helping?"
   papers: SavedPaper[];
+  exams: Exam[];
   activeBlock?: ActiveBlock;
 }

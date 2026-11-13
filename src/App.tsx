@@ -132,7 +132,15 @@ function AppShell() {
   const muted = useStore((s) => s.settings.muted);
   const setMuted = useStore((s) => s.setMuted);
   const activeBlock = useStore((s) => s.activeBlock);
-  const [screen, setScreen] = useState<Screen>('home');
+  // reopen on the screen the child was on, so an interruption doesn't lose their place
+  const screenKey = `screen:${account.childId}`;
+  const [screen, setScreen] = useState<Screen>(() => {
+    try {
+      const v = localStorage.getItem(screenKey) as Screen | null;
+      return v && ['home', 'session', 'plan', 'worksheets', 'rooms', 'insights', 'parent'].includes(v) ? v : 'home';
+    } catch { return 'home'; }
+  });
+  useEffect(() => { try { localStorage.setItem(screenKey, screen); } catch { /* private mode */ } }, [screenKey, screen]);
   const [sync, setSync] = useState<SyncStatus>('saved');
 
   useEffect(() => onSyncStatus(setSync), []);

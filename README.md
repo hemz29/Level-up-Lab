@@ -62,9 +62,16 @@ See [docs/APP_STORES.md](docs/APP_STORES.md) for store naming, keywords, kids-ca
 
 All game numbers (GP values, stage thresholds, play-time scale, recall intervals, block lengths, mistake categories, exercise types) are in [`src/config/config.json`](src/config/config.json). Change them after the trial week and redeploy.
 
-## Chapter lists
+## Subjects, portions and exams (per family)
 
-`src/data/subjects.json` is currently a **draft** based on the typical ICSE Grade 6 syllabus. See [docs/SEED_DATA.md](docs/SEED_DATA.md) to replace it with Raaga's actual textbook contents. The parent area can also edit chapters in-app.
+Each child's curriculum lives in their own saved progress, so every family sets up its own:
+
+- **Plan → 1. Subjects & exams:** add, rename, re-type or remove subjects. For each subject, type chapters one by one or **paste / upload (.txt, .csv) the school's portions list**: numbering is tidied and lines like "Revision" or "Unit test" are skipped. New chapters start as "In portion".
+- **Exams:** name, date and the subjects each one covers. The plan counts down to the next exam; past exams drop off on their own.
+- **Ready-made lists:** start from a sample list or from an empty list.
+- Every change saves as you type; half-typed text in the paste and "add" boxes is kept on the device; the app reopens on the same screen and tab after an interruption.
+
+`src/data/subjects.json` is only the starting draft for a brand-new child. See [docs/SEED_DATA.md](docs/SEED_DATA.md) to change it.
 
 ## Project layout
 

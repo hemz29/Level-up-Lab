@@ -1,5 +1,7 @@
 import { create } from 'zustand';
 import type {
+  Exam,
+  SubjectKind,
   SavedPaper,
   AppState, BlockLog, DateKey, DaySession, PlannedBlock, PortionStatus, RecallRating, StageId, Subject, Takeaway, WorldId,
 } from '../types';
@@ -11,6 +13,7 @@ import { initialDue, schedule, selectRecall, toRecallItem, recallScore } from '.
 import { computeDayPlay } from '../engine/rewards';
 import { stageFor, stageIndex } from '../engine/creature';
 import { isValidMistakeNote } from '../engine/insights';
+import { applyExams, guessKind, nextColor } from '../engine/curriculum';
 import { subjectsFromTemplate, TEMPLATES } from '../data/templates';
 
 export function seedSubjects(): Subject[] {
@@ -41,6 +44,7 @@ export function initialState(): AppState {
     gallery: [],
     feedbackWeeks: [],
     papers: [],
+    exams: [],
   };
 }
 
@@ -85,6 +89,13 @@ interface Actions {
   addChapter(subjectId: string, title: string): void;
   deleteChapter(subjectId: string, chapterId: string): void;
   renameSubject(subjectId: string, name: string): void;
+  addSubject(name: string): string;
+  deleteSubject(subjectId: string): void;
+  setSubjectKind(subjectId: string, kind: SubjectKind): void;
+  addChapters(subjectId: string, titles: string[], mode: 'append' | 'replace'): void;
+  clearAllSubjects(): void;
+  saveExam(exam: Omit<Exam, 'id'> & { id?: string }): void;
+  deleteExam(id: string): void;
   loadTemplate(templateId: string): void;
   nameCreature(name: string): void;
   ackCelebration(): void;
@@ -143,6 +154,12 @@ function recomputeDay(s: AppState, date: DateKey): Partial<AppState> {
   const ledger = s.ledger.filter((e) => !(e.date === date && e.reason === 'earned'));
   if (total > 0) ledger.push({ date, minutes: total, reason: 'earned' });
   return { ledger, sessions: { ...s.sessions, [date]: { ...session, playEarned: total } } };
+}
+
+/** Keeps subject test dates and the overall test date in step with the exam list. */
+function withExams(s: AppState): Partial<AppState> {
+  const { subjects, globalTestDate } = applyExams(s.subjects, s.exams ?? [], todayKey());
+  return { subjects, exams: s.exams ?? [], plan: { ...s.plan, globalTestDate } };
 }
 
 export const useStore = create<Store>()(
@@ -329,6 +346,43 @@ export const useStore = create<Store>()(
           subjects: s.subjects.map((x) => (x.id !== subjectId ? x : { ...x, chapters: x.chapters.filter((c) => c.id !== chapterId).map((c, i) => ({ ...c, number: i + 1 })) })),
         })),
         renameSubject: (subjectId, name) => update((s) => ({ subjects: s.subjects.map((x) => (x.id === subjectId ? { ...x, name } : x)) })),
+        addSubject: (name) => {
+          const id = uid('subj');
+          update((s) => {
+            const subjects = [...s.subjects, { id, name, kind: guessKind(name), color: nextColor(s.subjects.map((x) => x.color)), chapters: [] }];
+            return withExams({ ...s, subjects });
+          });
+          return id;
+        },
+        deleteSubject: (subjectId) => update((s) => {
+          // logged study history stays; the subject leaves the plan, portions and exams
+          const days = Object.fromEntries(Object.entries(s.plan.days).map(([d, bl]) => [d, bl.filter((b) => b.subjectId !== subjectId)]).filter(([, bl]) => (bl as unknown[]).length));
+          const exams = (s.exams ?? []).map((e) => (e.subjectIds === 'all' ? e : { ...e, subjectIds: e.subjectIds.filter((x) => x !== subjectId) }));
+          return withExams({ ...s, subjects: s.subjects.filter((x) => x.id !== subjectId), plan: { ...s.plan, days }, exams });
+        }),
+        setSubjectKind: (subjectId, kind) => update((s) => ({ subjects: s.subjects.map((x) => (x.id === subjectId ? { ...x, kind } : x)) })),
+        /** Pasted or uploaded portions: new chapters are marked "In portion". */
+        addChapters: (subjectId, titles, mode) => update((s) => ({
+          subjects: s.subjects.map((x) => {
+            if (x.id !== subjectId) return x;
+            const kept = mode === 'replace' ? x.chapters.filter((c) => c.doneDates.length > 0).map((c) => ({ ...c, portionStatus: 'out' as const })) : x.chapters;
+            const existing = new Set(kept.map((c) => c.title.toLowerCase()));
+            const added = titles.filter((t) => !existing.has(t.toLowerCase())).map((title) => ({
+              id: uid(`${x.id}-c`), subjectId, number: 0, title, weight: 1, portionStatus: 'in' as const, doneDates: [],
+            }));
+            const chapters = [...(mode === 'replace' ? [...added, ...kept] : [...kept, ...added])].map((c, i) => ({ ...c, number: i + 1 }));
+            return { ...x, chapters };
+          }),
+        })),
+        clearAllSubjects: () => update((s) => withExams({ ...s, subjects: [], plan: { ...s.plan, days: Object.fromEntries(Object.entries(s.plan.days).filter(([d]) => d < todayKey())) }, exams: [] })),
+        saveExam: (exam) => update((s) => {
+          const list = s.exams ?? [];
+          const exams = exam.id && list.some((e) => e.id === exam.id)
+            ? list.map((e) => (e.id === exam.id ? { ...e, ...exam, id: e.id } : e))
+            : [...list, { ...exam, id: uid('exam') }];
+          return withExams({ ...s, exams });
+        }),
+        deleteExam: (id) => update((s) => withExams({ ...s, exams: (s.exams ?? []).filter((e) => e.id !== id) })),
 
         /** Replace the chapter lists with a ready-made portions list and draft a fresh plan from today. */
         loadTemplate: (templateId) => update((s) => {
@@ -363,6 +417,14 @@ export const useStore = create<Store>()(
         dailyHousekeeping: () => update((s) => {
           const today = todayKey();
           let out: Partial<AppState> = {};
+          // older profiles set test dates by hand: turn them into exams once, then let exams drive the dates
+          if (!(s.exams ?? []).length && (s.plan.globalTestDate || s.subjects.some((x) => x.testDate))) {
+            const exams: Exam[] = [];
+            if (s.plan.globalTestDate) exams.push({ id: uid('exam'), name: 'Exam', date: s.plan.globalTestDate, subjectIds: 'all' });
+            for (const x of s.subjects) if (x.testDate && x.testDate !== s.plan.globalTestDate) exams.push({ id: uid('exam'), name: `${x.name} test`, date: x.testDate, subjectIds: [x.id] });
+            out = { ...out, exams };
+          }
+          out = { ...out, ...withExams({ ...s, ...out } as AppState) };
           if (s.settings.paused && !s.settings.pausedDays.includes(today)) {
             out.settings = { ...s.settings, pausedDays: [...s.settings.pausedDays, today] };
           }

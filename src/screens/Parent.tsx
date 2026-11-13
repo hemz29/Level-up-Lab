@@ -29,7 +29,6 @@ export function Parent({ go }: { go: (s: Screen) => void }) {
 function ParentInner() {
   const s = useStore();
   const [msg, setMsg] = useState('');
-  const [editing, setEditing] = useState<string | null>(null);
   const [newPin, setNewPin] = useState('');
   const fileRef = useRef<HTMLInputElement>(null);
   const today = todayKey();
@@ -127,7 +126,7 @@ function ParentInner() {
 
       <div className="card">
         <h2>Chapter lists</h2>
-        <p className="muted">Check each subject against the textbook contents page. Rename, add or remove chapters, and mark heavy chapters (they get more time).</p>
+        <p className="muted">Load a ready-made list, or build your own in Plan → Subjects & exams.</p>
         <div className="template-box">
           <strong>Load a school portions list</strong>
           <p className="muted small">Replaces all subjects and chapters with the list below (every chapter marked "In portion") and drafts a new plan from today. Logged study history is kept.</p>
@@ -139,29 +138,7 @@ function ParentInner() {
           ))}
         </div>
         <label className="switch"><input type="checkbox" checked={s.settings.chaptersReviewed} onChange={(e) => s.setChaptersReviewed(e.target.checked)} /> I've reviewed the chapter lists</label>
-        {s.subjects.map((sub) => (
-          <div key={sub.id} className="subject-edit">
-            <button className="subject-head" aria-expanded={editing === sub.id} onClick={() => setEditing(editing === sub.id ? null : sub.id)}>
-              <span className="subject-name">{sub.name}</span><span className="muted small">{sub.chapters.length} chapters</span><span aria-hidden="true">{editing === sub.id ? '▾' : '▸'}</span>
-            </button>
-            {editing === sub.id && (
-              <div className="stack">
-                <label className="field inline"><span>Subject name</span><input defaultValue={sub.name} onBlur={(e) => e.target.value.trim() && s.renameSubject(sub.id, e.target.value.trim())} /></label>
-                {sub.chapters.map((c) => (
-                  <div key={c.id} className="row chapter-edit">
-                    <span className="muted">{c.number}.</span>
-                    <input defaultValue={c.title} onBlur={(e) => e.target.value.trim() && s.updateChapter(sub.id, c.id, { title: e.target.value.trim() })} aria-label={`Chapter ${c.number} title`} />
-                    <label className="small"><input type="checkbox" checked={c.weight > 1} onChange={(e) => s.updateChapter(sub.id, c.id, { weight: e.target.checked ? 2 : 1 })} /> heavy</label>
-                    <button className="btn ghost small" onClick={() => confirm(`Remove "${c.title}"?`) && s.deleteChapter(sub.id, c.id)}>✕</button>
-                  </div>
-                ))}
-                <form className="row" onSubmit={(e) => { e.preventDefault(); const f = e.currentTarget.elements.namedItem('t') as HTMLInputElement; if (f.value.trim()) { s.addChapter(sub.id, f.value.trim()); f.value = ''; } }}>
-                  <input name="t" placeholder="Add a chapter…" /><button className="btn small">Add</button>
-                </form>
-              </div>
-            )}
-          </div>
-        ))}
+        <p className="muted small">Subjects, chapters, pasted portions and exam dates are edited in <strong>Plan → 1. Subjects & exams</strong>.</p>
       </div>
 
       <div className="card">

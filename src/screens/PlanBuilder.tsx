@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { BlockType, DateKey, PlannedBlock, PortionStatus } from '../types';
 import { useStore } from '../store';
 import { addDays, prettyDay, range, todayKey } from '../engine/dates';
@@ -8,23 +8,33 @@ import { config } from '../config';
 import { lines } from '../lib/voice';
 import { Bubble } from '../components/Bubble';
 import { Modal } from '../components/Modal';
+import { CurriculumEditor } from '../components/CurriculumEditor';
 
 const PORTION_LABEL: Record<PortionStatus, string> = { in: 'In portion', probably: 'Probably', out: 'Not in portion' };
 const TYPE_LABEL: Record<BlockType, string> = { learn: 'New chapter', practice: 'Practice', revise: 'Quick revise', boss: 'Boss fight' };
 
 export function PlanBuilder() {
-  const [tab, setTab] = useState<'portions' | 'plan'>('portions');
+  const hasPortions = useStore((s) => s.subjects.some((x) => x.chapters.some((c) => c.portionStatus !== 'out')));
+  // remember the open tab so an interruption brings you back to the same place
+  const [tab, setTabState] = useState<'setup' | 'portions' | 'plan'>(() => {
+    try { return (localStorage.getItem('planTab') as 'setup' | 'portions' | 'plan') || (hasPortions ? 'plan' : 'setup'); } catch { return 'setup'; }
+  });
+  const setTab = (t: typeof tab) => setTabState(t);
+  useEffect(() => { try { localStorage.setItem('planTab', tab); } catch { /* private mode */ } }, [tab]);
   const [share, setShare] = useState(false);
   return (
     <div className="page">
       <div className="row between wrap">
         <h1>My plan</h1>
         <div className="tabs" role="tablist">
-          <button role="tab" aria-selected={tab === 'portions'} className={tab === 'portions' ? 'on' : ''} onClick={() => setTab('portions')}>1. Portions & test dates</button>
-          <button role="tab" aria-selected={tab === 'plan'} className={tab === 'plan' ? 'on' : ''} onClick={() => setTab('plan')}>2. Day-by-day plan</button>
+          <button role="tab" aria-selected={tab === 'setup'} className={tab === 'setup' ? 'on' : ''} onClick={() => setTab('setup')}>1. Subjects & exams</button>
+          <button role="tab" aria-selected={tab === 'portions'} className={tab === 'portions' ? 'on' : ''} onClick={() => setTab('portions')}>2. Portions</button>
+          <button role="tab" aria-selected={tab === 'plan'} className={tab === 'plan' ? 'on' : ''} onClick={() => setTab('plan')}>3. Day-by-day plan</button>
         </div>
       </div>
-      {tab === 'portions' ? <Portions onDone={() => setTab('plan')} /> : <Days onShare={() => setShare(true)} />}
+      {tab === 'setup' && <><CurriculumEditor /><div className="row"><button className="btn primary big" onClick={() => setTab('portions')}>Next: check portions</button></div></>}
+      {tab === 'portions' && <Portions onDone={() => setTab('plan')} />}
+      {tab === 'plan' && <Days onShare={() => setShare(true)} />}
       {share && <ShareView onClose={() => setShare(false)} />}
     </div>
   );
@@ -38,14 +48,12 @@ function Portions({ onDone }: { onDone: () => void }) {
   return (
     <div className="stack">
       {!s.settings.chaptersReviewed && (
-        <p className="hint">These chapter lists are a draft until a grown-up checks them against your textbooks, or loads your school's portions list in Parent → Chapter lists. You can still start marking portions.</p>
+        <p className="hint">These chapter lists are a starting draft. Set up your own subjects, chapters and exams in "1. Subjects & exams".</p>
       )}
       <div className="card row wrap">
-        <label className="field inline">
-          <span>Test date (all subjects)</span>
-          <input type="date" value={s.plan.globalTestDate ?? ''} min={todayKey()} onChange={(e) => s.setTestDate('global', e.target.value || undefined)} />
-        </label>
-        <p className="muted small">Not announced yet? Leave it empty and we'll plan one week at a time.</p>
+        {(s.exams ?? []).filter((e) => e.date >= todayKey()).length
+          ? <span>Next exams: {(s.exams ?? []).filter((e) => e.date >= todayKey()).sort((a, b) => (a.date < b.date ? -1 : 1)).slice(0, 3).map((e) => `${e.name} (${prettyDay(e.date)})`).join(' · ')}</span>
+          : <span className="muted">No exams set yet, so we'll plan one week at a time. Add exams in "1. Subjects & exams".</span>}
       </div>
       {s.subjects.map((sub) => {
         const counts = { in: 0, probably: 0, out: 0 };
@@ -61,10 +69,7 @@ function Portions({ onDone }: { onDone: () => void }) {
             {isOpen && (
               <div className="stack">
                 <div className="row wrap">
-                  <label className="field inline">
-                    <span>{sub.name} test date</span>
-                    <input type="date" value={sub.testDate ?? ''} min={todayKey()} onChange={(e) => s.setTestDate(sub.id, e.target.value || undefined)} />
-                  </label>
+                  {sub.testDate && <span className="pill">Test {prettyDay(sub.testDate)}</span>}
                   <button className="btn small ghost" onClick={() => sub.chapters.forEach((c) => s.setPortion(c.id, 'in'))}>Mark all in</button>
                   <button className="btn small ghost" onClick={() => sub.chapters.forEach((c) => s.setPortion(c.id, 'out'))}>Clear all</button>
                 </div>
@@ -206,7 +211,7 @@ function ShareView({ onClose }: { onClose: () => void }) {
   return (
     <Modal title={`${s.profile?.name}'s plan`} onClose={onClose} wide>
       <div className="print-area">
-        <p className="muted">Read-only view. {s.plan.globalTestDate ? `Test date: ${prettyDay(s.plan.globalTestDate)}.` : 'No test date set yet.'}</p>
+        <p className="muted">Read-only view. {(s.exams ?? []).filter((e) => e.date >= todayKey()).length ? `Exams: ${(s.exams ?? []).filter((e) => e.date >= todayKey()).sort((a, b) => (a.date < b.date ? -1 : 1)).map((e) => `${e.name} ${prettyDay(e.date)}`).join(', ')}.` : 'No exam dates set yet.'}</p>
         <table className="plan-table">
           <thead><tr><th>Day</th><th>Blocks</th></tr></thead>
           <tbody>

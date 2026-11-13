@@ -631,3 +631,11 @@ main { max-width: 1180px; margin: 0 auto; padding: 24px; }
 .note-tag { display: inline-block; margin-left: 8px; font-size: 0.72rem; font-weight: 700; padding: 1px 8px; border-radius: 999px; background: var(--surface2); color: var(--muted); }
 .note-tag.got, .note-tag.mastered { color: var(--good); }
 .note-tag.missed { color: var(--bad); }
+.paste-box { background: var(--surface2); border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; }
+.paste-box p { margin: 0; }
+.parsed-list { margin: 0; padding-left: 1.4em; columns: 2; column-gap: 24px; font-size: 0.92rem; }
+.exam-row { border-top: 1px solid var(--line); padding-top: 10px; }
+.exam-row.past { opacity: 0.55; }
+.exam-row .chips { margin: 6px 0 0; }
+.small-chip { padding: 4px 10px; font-size: 0.85rem; }
+@media (max-width: 600px) { .parsed-list { columns: 1; } }
