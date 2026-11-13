@@ -175,6 +175,15 @@ export interface SavedPaper {
   score?: number;
 }
 
+/** A song she recorded in the Music corner. The audio stays on this device only. */
+export interface SavedSong {
+  id: string;
+  title: string;
+  createdAt: string;
+  seconds: number;
+  backing?: string;
+}
+
 export interface AppState {
   version: 1;
   profile?: Profile;
@@ -194,5 +203,7 @@ export interface AppState {
   feedbackWeeks: DateKey[]; // weeks the child already answered "is this helping?"
   papers: SavedPaper[];
   exams: Exam[];
+  songs: SavedSong[];
+  singingBest?: number; // best warm-up score (0..5)
   activeBlock?: ActiveBlock;
 }

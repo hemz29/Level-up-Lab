@@ -2,11 +2,10 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import type { StageId } from '../types';
 import { useStore } from '../store';
 import { config } from '../config';
-import { todayKey } from '../engine/dates';
 import { stageIndex } from '../engine/creature';
-import { balanceOf } from '../store/selectors';
 import { dropImage, storeImage } from '../lib/sync';
 import { useImage } from '../lib/useImage';
+import { usePlayMeter } from '../lib/usePlayMeter';
 import { uid } from '../engine/planner';
 import { lines } from '../lib/voice';
 import { play } from '../lib/sound';
@@ -35,7 +34,6 @@ export function ArtRoom({ go }: { go: (s: Screen) => void }) {
   const [size, setSize] = useState(8);
   const [undo, setUndo] = useState<ImageData[]>([]);
   const [redo, setRedo] = useState<ImageData[]>([]);
-  const [timeUp, setTimeUp] = useState(false);
   const [tab, setTab] = useState<'draw' | 'gallery'>('draw');
   const [saved, setSaved] = useState(false);
   const drawing = useRef<{ x: number; y: number } | null>(null);
@@ -44,21 +42,7 @@ export function ArtRoom({ go }: { go: (s: Screen) => void }) {
   const brushes = BRUSHES.filter((b) => stageIndex(b.stage) <= stageIdx);
   const colors = stageIdx >= stageIndex('juvenile') ? [...BASE_COLORS, ...EXTRA_COLORS] : BASE_COLORS;
 
-  // Play-time meter: one minute is spent for each minute in the room.
-  const [secs, setSecs] = useState(0);
-  const balance = balanceOf(s, todayKey());
-  useEffect(() => {
-    if (timeUp) return;
-    const t = setInterval(() => setSecs((x) => x + 1), 1000);
-    return () => clearInterval(t);
-  }, [timeUp]);
-  useEffect(() => {
-    if (secs > 0 && secs % 60 === 0) s.spendPlay(1, 'art');
-  }, [secs]); // eslint-disable-line react-hooks/exhaustive-deps
-  useEffect(() => {
-    if (balance <= 0 && !timeUp) { setTimeUp(true); play('break'); }
-  }, [balance, timeUp]);
-  const leftSec = balance * 60 - (secs % 60);
+  const { leftSec, timeUp } = usePlayMeter('art');
 
   useEffect(() => {
     const ctx = canvas.current!.getContext('2d')!;

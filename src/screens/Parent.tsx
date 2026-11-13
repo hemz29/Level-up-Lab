@@ -36,7 +36,7 @@ function ParentInner() {
 
   const backup = async () => {
     const images: Record<string, string> = {};
-    for (const g of s.gallery) { const url = await getImage(g.id); if (url) images[g.id] = url; }
+    for (const id of [...s.gallery.map((g) => g.id), ...(s.songs ?? []).map((x) => x.id)]) { const url = await getImage(id); if (url) images[id] = url; }
     const data = { app: 'raagas-study-companion', exportedAt: new Date().toISOString(), state: snapshot(), images };
     download(`level-up-lab-backup-${today}.json`, JSON.stringify(data), 'application/json');
   };

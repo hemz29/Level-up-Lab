@@ -6,7 +6,7 @@ import type { Screen } from '../App';
 
 const ROOMS = [
   { id: 'art', name: 'Art studio', icon: '🎨', blurb: 'Paint, sketch, and design your own creature.', unlockStage: 'hatchling', ready: true },
-  { id: 'music', name: 'Music corner', icon: '🎵', blurb: 'Name the instrument, artist trivia, and record yourself singing.', unlockStage: 'hatchling', ready: false },
+  { id: 'music', name: 'Music corner', icon: '🎵', blurb: 'Warm up your voice, play ear games and record yourself singing over a backing track.', unlockStage: 'hatchling', ready: true },
   { id: 'chess', name: 'Chess with your creature', icon: '♟️', blurb: 'Your creature has been practising openings…', unlockStage: 'juvenile', ready: false },
   { id: 'runner', name: 'Sky runner', icon: '🏃', blurb: 'An endless dash across the rooftops of your world.', unlockStage: 'teen', ready: false },
 ] as const;
@@ -30,7 +30,13 @@ export function Rooms({ go }: { go: (s: Screen) => void }) {
           <ul className="todo">{gate.reasons.map((r) => <li key={r}>{r}</li>)}</ul>
         </div>
       )}
-      {gate.passed && balance <= 0 && <p className="hint">No play time left right now. Finish your plan, catch a mistake or ace a recall to earn more.</p>}
+      {gate.passed && balance <= 0 && (
+        <div className="hint">
+          <p><strong>No play time yet today.</strong> Play time is earned by finishing <em>all</em> the blocks you picked when you started today's session (that gives 15 minutes), then:</p>
+          <ul className="todo"><li>+5 min for a bonus block</li><li>+5 min for each mistake you catch (up to 2)</li><li>+5 to +10 min for a strong recall quiz</li></ul>
+          <p className="small">Tip: if you started with 3 blocks, finish all 3, even if you did extra subjects instead.</p>
+        </div>
+      )}
       <div className="rooms-grid">
         {ROOMS.map((r) => {
           const stageOk = stageIdx >= stageIndex(r.unlockStage);

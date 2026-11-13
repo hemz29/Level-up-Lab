@@ -19,10 +19,11 @@ import { Parent } from './screens/Parent';
 import { Report } from './screens/Report';
 import { Admin } from './screens/Admin';
 import { Worksheets } from './screens/Worksheets';
+import { MusicRoom } from './screens/MusicRoom';
 import { ChildPicker, Consent, SignIn } from './screens/Auth';
 import { Celebration } from './components/Celebration';
 
-export type Screen = 'home' | 'plan' | 'session' | 'rooms' | 'art' | 'insights' | 'parent' | 'report-past' | 'admin' | 'worksheets';
+export type Screen = 'home' | 'plan' | 'session' | 'rooms' | 'art' | 'insights' | 'parent' | 'report-past' | 'admin' | 'worksheets' | 'music';
 
 const NAV: { id: Screen; label: string }[] = [
   { id: 'home', label: 'Home' },
@@ -150,7 +151,7 @@ function AppShell() {
   if (!profile) return <Setup name={account.childNickname} />;
 
   const go = (s: Screen) => { setScreen(s); window.scrollTo(0, 0); };
-  const inRoom = screen === 'art';
+  const inRoom = screen === 'art' || screen === 'music';
 
   return (
     <div className="app">
@@ -176,6 +177,7 @@ function AppShell() {
         {screen === 'plan' && <PlanBuilder />}
         {screen === 'rooms' && <Rooms go={go} />}
         {screen === 'art' && <ArtRoom go={go} />}
+        {screen === 'music' && <MusicRoom go={go} />}
         {screen === 'insights' && <Notebook />}
         {screen === 'worksheets' && <Worksheets />}
         {screen === 'parent' && <Parent go={go} />}

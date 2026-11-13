@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import type {
+  SavedSong,
   Exam,
   SubjectKind,
   SavedPaper,
@@ -45,6 +46,7 @@ export function initialState(): AppState {
     feedbackWeeks: [],
     papers: [],
     exams: [],
+    songs: [],
   };
 }
 
@@ -101,6 +103,10 @@ interface Actions {
   ackCelebration(): void;
   setCustomArt(stage: StageId, imageId?: string): void;
   addGalleryItem(id: string): void;
+  addSong(song: SavedSong): void;
+  renameSong(id: string, title: string): void;
+  removeSong(id: string): void;
+  recordSingingScore(score: number): void;
   togglePin(id: string): void;
   removeGalleryItem(id: string): void;
   markFeedback(weekStart: DateKey): void;
@@ -401,6 +407,10 @@ export const useStore = create<Store>()(
           return { creature: { ...s.creature, customArt } };
         }),
         addGalleryItem: (id) => update((s) => ({ gallery: [{ id, createdAt: new Date().toISOString(), pinned: false }, ...s.gallery] })),
+        addSong: (song) => update((s) => ({ songs: [song, ...(s.songs ?? [])].slice(0, 30) })),
+        renameSong: (id, title) => update((s) => ({ songs: (s.songs ?? []).map((x) => (x.id === id ? { ...x, title } : x)) })),
+        removeSong: (id) => update((s) => ({ songs: (s.songs ?? []).filter((x) => x.id !== id) })),
+        recordSingingScore: (score) => update((s) => ({ singingBest: Math.max(s.singingBest ?? 0, score) })),
         togglePin: (id) => update((s) => ({ gallery: s.gallery.map((g) => (g.id === id ? { ...g, pinned: !g.pinned } : g)) })),
         removeGalleryItem: (id) => update((s) => ({ gallery: s.gallery.filter((g) => g.id !== id) })),
         savePaper: (p) => {
