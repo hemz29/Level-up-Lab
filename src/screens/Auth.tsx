@@ -29,17 +29,17 @@ export function SignIn() {
           <form className="stack" onSubmit={async (e) => {
             e.preventDefault();
             setBusy(true); setErr('');
-            const { error } = await supabase!.auth.signInWithOtp({ email: email.trim(), options: { shouldCreateUser: true } });
+            const { error } = await supabase!.auth.signInWithOtp({ email: email.trim(), options: { shouldCreateUser: true, emailRedirectTo: window.location.origin } });
             setBusy(false);
             if (error) setErr(error.message); else setStep('code');
           }}>
             <h2>Parent sign-in</h2>
-            <p className="muted">Grown-ups sign in, then pick which child is studying. We'll email you a 6-digit code. No password needed.</p>
+            <p className="muted">Grown-ups sign in, then pick which child is studying. We'll email you a sign-in link. No password needed.</p>
             <label className="field"><span>Parent's email</span>
               <input type="email" required autoFocus autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" />
             </label>
             {err && <p className="error">{err}</p>}
-            <button className="btn primary big" disabled={busy || !email.includes('@')}>{busy ? 'Sending…' : 'Email me a code'}</button>
+            <button className="btn primary big" disabled={busy || !email.includes('@')}>{busy ? 'Sending…' : 'Email me a sign-in link'}</button>
             <p className="muted small">By continuing you confirm you are the child's parent or guardian. <a href="/privacy.html" target="_blank" rel="noreferrer">Privacy</a></p>
           </form>
         ) : (
@@ -48,11 +48,12 @@ export function SignIn() {
             setBusy(true); setErr('');
             const { error } = await supabase!.auth.verifyOtp({ email: email.trim(), token: code.trim(), type: 'email' });
             setBusy(false);
-            if (error) setErr('That code did not work. Check the newest email, or send a new code.');
+            if (error) setErr('That code did not work. Use the link in the newest email, or send a new one.');
           }}>
             <h2>Check your email</h2>
-            <p className="muted">We sent a code to <strong>{email}</strong>. It can take a minute, and may land in spam.</p>
-            <label className="field"><span>6-digit code</span>
+            <p>We sent an email to <strong>{email}</strong>. <strong>Open it on this device and tap the link</strong> ("Log In" or "Confirm your email") to sign in.</p>
+            <p className="muted small">It can take a minute, and may land in spam. You can close this page: the link signs you in either way.</p>
+            <label className="field"><span>Got a 6-digit code instead? Type it here</span>
               <input inputMode="numeric" autoComplete="one-time-code" autoFocus maxLength={10} value={code} onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))} className="code-input" />
             </label>
             {err && <p className="error">{err}</p>}

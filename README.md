@@ -28,7 +28,7 @@ Phase-2 rooms (music corner, chess, runner) appear as locked teasers.
 
 ## Accounts and privacy model
 
-- **Parents sign in** with their email and a 6-digit code (no passwords). Children never need an email.
+- **Parents sign in** with their email and a one-time link (or 6-digit code), no passwords. Children never need an email.
 - One parent account can have **up to 6 children**. Each child's progress is saved to the cloud (Supabase), so it's there on any device, and it's also kept on the device so it works offline.
 - **Admins** (emails in `ADMIN_EMAILS`) get a dashboard of **usage numbers only**: study days, minutes, consistency, recall improvement, mistakes by type, creature stage, and weekly "is it helping?" answers. Database rules stop anyone, admins included, from reading another family's notes or drawings through the app.
 - Parents can delete a child or their whole account any time (Parent → Account).

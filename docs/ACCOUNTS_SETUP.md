@@ -17,22 +17,14 @@ About 20 minutes, one time. You'll create a free Supabase project, run one SQL f
 
 This creates the tables and the security rules. Those rules mean each parent can only reach their own children's data, and the admin dashboard only ever reads the numbers table.
 
-## 3. Turn on sign-in with a 6-digit code
+## 3. Turn on email sign-in
 
-1. **Authentication → Sign In / Providers → Email**: make sure **Email** is enabled. Turn **Confirm email** on (the code does the confirming).
-2. **Authentication → Email Templates**. Edit **both** of these templates so the email shows the code:
-   - **Magic Link**
-   - **Confirm signup**
+1. **Authentication → Sign In / Providers → Email**: make sure **Email** is enabled.
+2. **Authentication → URL Configuration**:
+   - **Site URL**: your main Vercel address, e.g. `https://raaga-s-study-companion.vercel.app`
+   - **Redirect URLs**: add the same address (and any custom domain you add later).
 
-   Replace the body of each with:
-   ```html
-   <h2>Your Level-Up Lab code</h2>
-   <p>Enter this code to sign in:</p>
-   <p style="font-size:28px;font-weight:bold;letter-spacing:6px">{{ .Token }}</p>
-   <p>If you didn't ask for this, you can ignore this email.</p>
-   ```
-   Set the subject of each to `Your Level-Up Lab code`.
-3. **Authentication → URL Configuration**: set **Site URL** to your Vercel address, e.g. `https://raaga-s-study-companion.vercel.app`.
+No email-template changes are needed: parents get Supabase's default email and **click its link** ("Log In" / "Confirm your email") on the device they're using. If you later set up custom SMTP (step 4) and add `{{ .Token }}` to the templates, the app also accepts the 6-digit code.
 
 ## 4. Send emails through Resend (needed for other families)
 
