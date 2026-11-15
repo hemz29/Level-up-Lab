@@ -4,6 +4,7 @@ import { OutlineMap } from './OutlineMap';
 interface Props { paper: Paper; schoolName?: string; grade?: number; answerKey?: boolean; answerSpace?: boolean }
 
 const ROMAN = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x'];
+const BIG_ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
 const Lines = ({ n }: { n: number }) => (n > 0 ? <div className="answer-lines" aria-hidden="true">{Array.from({ length: n }, (_, i) => <span key={i} />)}</div> : null);
 const marksTag = (m: number) => <span className="q-marks">({m})</span>;
 const GRADE = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
@@ -45,7 +46,7 @@ export function PaperView({ paper, schoolName, grade = 6, answerKey = false, ans
       {paper.sections.map((s, si) => (
         <section key={si} className="paper-section">
           {s.title && <h2>{s.title}</h2>}
-          {s.questions.map((q) => <Question key={q.number} q={q} answerKey={answerKey} space={space} mapInline={!paper.mapAtEnd} />)}
+          {s.questions.map((q) => <Question key={q.number} q={q} answerKey={answerKey} space={space} mapInline={!paper.mapAtEnd} roman={paper.numbering === 'roman'} />)}
         </section>
       ))}
 
@@ -61,16 +62,50 @@ export function PaperView({ paper, schoolName, grade = 6, answerKey = false, ans
   );
 }
 
-function Question({ q, answerKey, space, mapInline }: { q: PaperQuestion; answerKey: boolean; space: boolean; mapInline: boolean }) {
+function Question({ q, answerKey, space, mapInline, roman }: { q: PaperQuestion; answerKey: boolean; space: boolean; mapInline: boolean; roman: boolean }) {
+  const each = q.marksEach ?? (q.items.length && q.items.every((i) => i.marks === q.items[0].marks) ? q.items[0].marks : undefined);
   return (
     <div className="paper-q">
-      <div className="q-head">
-        <span className="q-num">QUESTION {q.number}</span>
-      </div>
-      <div className="q-head sub">
-        {q.heading && <span className="q-heading">{q.heading}</span>}
-        {marksTag(q.marks)}
-      </div>
+      {roman ? (
+        <div className="q-head roman">
+          <span className="q-num">{BIG_ROMAN[q.number - 1]}.</span>
+          <span className="q-heading">{q.heading}</span>
+          {!q.pictures && <span className="q-marks">({each ? `${each}x${q.items.length}=${q.marks}` : q.marks})</span>}
+        </div>
+      ) : (
+        <>
+          <div className="q-head">
+            <span className="q-num">QUESTION {q.number}</span>
+          </div>
+          <div className="q-head sub">
+            {q.heading && <span className="q-heading">{q.heading}</span>}
+            {marksTag(q.marks)}
+          </div>
+        </>
+      )}
+      {q.pictures && (
+        <table className="q-pictures">
+          <tbody>
+            {q.pictures.map((pic, pi) => (
+              <tr key={pi}>
+                <td className="pic-cell">
+                  {pic.image ? <img src={pic.image} alt={pic.scene} /> : <div className="pic-placeholder"><span>Picture</span><p>{pic.scene}</p></div>}
+                </td>
+                <td>
+                  <p className="pic-num">{pi + 1})</p>
+                  {pic.parts.map((pt) => (
+                    <div key={pt.label} className="pic-part">
+                      <p>{pic.parts.length > 1 ? `${pt.label.replace('.', ')')} ` : ''}{pt.text} <strong>({pt.marks})</strong></p>
+                      {answerKey && <p className="key-a">{pt.answer}</p>}
+                    </div>
+                  ))}
+                  {answerKey && <p className="key-src">{pic.parts[0]?.source}</p>}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
       {q.passage && <blockquote className="q-passage">{q.passage}</blockquote>}
       {q.chart && <BarChart chart={q.chart} />}
       {q.fillTable && (
@@ -94,16 +129,16 @@ function Question({ q, answerKey, space, mapInline }: { q: PaperQuestion; answer
         </table>
       )}
       {q.map && mapInline && <OutlineMap marks={q.map.features} showNames={answerKey} className="q-map" />}
-      {q.fillTable ? (answerKey ? <p className="key-src">{q.items[0]?.source}</p> : null) : (!q.match || answerKey) ? (
+      {q.pictures ? null : q.fillTable ? (answerKey ? <p className="key-src">{q.items[0]?.source}</p> : null) : (!q.match || answerKey) ? (
         <ol className={`q-items ${q.items.every((i) => i.options) ? 'mcq' : ''}`}>
-          {q.items.map((it, i) => <Item key={it.label + i} it={{ ...it, label: `${ROMAN[i]}.` }} answerKey={answerKey} space={space} isMap={!!q.map} isMatch={!!q.match} />)}
+          {q.items.map((it, i) => <Item key={it.label + i} it={{ ...it, label: roman ? `${i + 1})` : `${ROMAN[i]}.` }} answerKey={answerKey} space={space} isMap={!!q.map} isMatch={!!q.match} hideMarks={roman} />)}
         </ol>
       ) : null}
     </div>
   );
 }
 
-function Item({ it, answerKey, space, isMap, isMatch }: { it: PaperItem; answerKey: boolean; space: boolean; isMap: boolean; isMatch: boolean }) {
+function Item({ it, answerKey, space, isMap, isMatch, hideMarks }: { it: PaperItem; answerKey: boolean; space: boolean; isMap: boolean; isMatch: boolean; hideMarks?: boolean }) {
   if (answerKey) {
     return (
       <li className="q-item">
@@ -132,7 +167,7 @@ function Item({ it, answerKey, space, isMap, isMatch }: { it: PaperItem; answerK
         )}
         {space && !it.table && <Lines n={it.lines} />}
       </div>
-      <span className="q-marks item">({it.marks})</span>
+      {!hideMarks && <span className="q-marks item">({it.marks})</span>}
     </li>
   );
 }

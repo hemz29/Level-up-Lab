@@ -3,7 +3,7 @@
  * Every item carries the page it comes from, so answer keys can say where to look.
  * Questions and passages are written fresh from the chapter's facts (not copied text).
  */
-export type QType = 'mcq' | 'fill' | 'name' | 'define' | 'match' | 'reason' | 'difference' | 'short' | 'long' | 'passage' | 'stimulus';
+export type QType = 'mcq' | 'fill' | 'name' | 'define' | 'match' | 'reason' | 'difference' | 'short' | 'long' | 'passage' | 'stimulus' | 'picture';
 
 interface Base {
   id: string;
@@ -33,7 +33,16 @@ export interface StimulusQ extends Base {
   parts: { q: string; answer: string }[];
 }
 
-export type BankQuestion = McqQ | FillQ | NameQ | DefineQ | MatchQ | ReasonQ | DifferenceQ | ShortQ | LongQ | PassageQ | StimulusQ;
+/** Picture study: a picture (an image file once supplied, otherwise its description) with short parts. */
+export interface PictureQ extends Base {
+  type: 'picture';
+  scene: string; // what the picture shows (printed in a frame until an image is added)
+  image?: string; // e.g. /pictures/history/coins.webp
+  imagePrompt?: string; // prompt for generating an original picture
+  parts: { q: string; answer: string; marks: number }[];
+}
+
+export type BankQuestion = McqQ | FillQ | NameQ | DefineQ | MatchQ | ReasonQ | DifferenceQ | ShortQ | LongQ | PassageQ | StimulusQ | PictureQ;
 
 export interface MapFeature {
   id: string;
@@ -54,6 +63,7 @@ export interface ChapterBank {
   chapter: string;
   pages: string;
   map?: 'south-america';
+  /** paper layouts can differ per subject (see config/papers.json → subjects) */
   questions: BankQuestion[];
   mapFeatures: MapFeature[];
 }

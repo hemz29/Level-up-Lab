@@ -7,6 +7,7 @@ export type QuestionSpec =
   | { kind: 'pick'; types: QType[]; heading: string; count: number; marksEach: number; anyMarks?: boolean; onePoint?: boolean; singleAnswer?: boolean }
   | { kind: 'table'; heading: string; count: number; marksEach: number }
   | { kind: 'stimulus'; heading: string; count: number; marksEach: number }
+  | { kind: 'picture'; heading: string; count: number; marksEach: number }
   | { kind: 'match'; heading: string; count: number; marksEach: number }
   | { kind: 'map'; mode: 'mark' | 'identify'; heading: string; count: number; marksEach: number }
   | { kind: 'structured'; heading: string; count: number; marks: number };
@@ -16,6 +17,10 @@ export interface PaperSpec {
   id: string; title: string; minutes: number | null; answerSpace: boolean; sections: SectionSpec[];
   /** school style: instructions under the header, notes box, map printed at the end */
   instructions?: string[]; notes?: string[]; mapAtEnd?: boolean;
+  /** 'roman' = I., II. section-style headings with (0.5x6=3) marks, as in the History paper */
+  numbering?: 'question' | 'roman';
+  /** per-subject overrides, keyed by subject id */
+  subjects?: Record<string, Partial<Omit<PaperSpec, 'subjects' | 'id'>>>;
 }
 
 export function paperSpecs(): PaperSpec[] {
@@ -24,6 +29,15 @@ export function paperSpecs(): PaperSpec[] {
     ...p,
     sections: typeof p.sections === 'string' ? layouts[p.sections.slice(1)] : (p.sections as SectionSpec[]),
   })) as PaperSpec[];
+}
+
+/** A paper type can have its own layout per subject (e.g. History's Unit Test differs from Geography's). */
+export function resolveSpec(spec: PaperSpec, subjectId?: string): PaperSpec {
+  const o = subjectId ? spec.subjects?.[subjectId] : undefined;
+  if (!o) return spec;
+  const layouts = papersConfig.layouts as Record<string, SectionSpec[]>;
+  const sections = typeof o.sections === 'string' ? layouts[(o.sections as string).slice(1)] : o.sections;
+  return { ...spec, ...o, sections: sections ?? spec.sections };
 }
 
 export const specMarks = (q: QuestionSpec) => (q.kind === 'structured' ? q.count * q.marks : q.count * q.marksEach);
@@ -57,6 +71,8 @@ export interface PaperQuestion {
   match?: { leftTitle: string; rightTitle: string; left: string[]; right: string[] };
   fillTable?: { leftTitle: string; rightTitle: string; left: string[] };
   chart?: { title: string; yLabel: string; bars: { label: string; value: number; note?: string }[]; source?: string };
+  pictures?: { scene: string; image?: string; parts: PaperItem[] }[];
+  marksEach?: number; // for (0.5x6=3)-style headings
   map?: MapTask;
 }
 
@@ -76,6 +92,7 @@ export interface Paper {
   instructions?: string[];
   notes?: string[];
   mapAtEnd?: boolean;
+  numbering?: 'question' | 'roman';
 }
 
 /* ---------- helpers ---------- */
@@ -113,6 +130,7 @@ function marksOf(q: BankQuestion): number {
     case 'short': case 'long': return q.marks;
     case 'passage': return q.parts.reduce((a, p) => a + p.marks, 0);
     case 'stimulus': return q.parts.length;
+    case 'picture': return q.parts.reduce((a, p) => a + p.marks, 0);
     default: return 1;
   }
 }
@@ -123,7 +141,7 @@ function toItem(t: Tagged, i: number, marks: number, mixed: boolean, onePoint = 
   const base = { label: label(i), marks, source, topic: q.topic ? `${chapter}:${q.topic}` : undefined };
   switch (q.type) {
     case 'mcq':
-      return { ...base, text: q.q, options: q.options.map((o, k) => `(${ROMAN[k]}) ${o}`), lines: 0, answer: `(${ROMAN[q.correct]}) ${q.options[q.correct]}` };
+      return { ...base, text: q.q, options: q.options.map((o, k) => `${LETTERS[k]}) ${o}`), lines: 0, answer: `${LETTERS[q.correct]}) ${q.options[q.correct]}` };
     case 'fill':
       return { ...base, text: q.q, lines: 0, answer: q.answer };
     case 'name':
@@ -142,6 +160,7 @@ function toItem(t: Tagged, i: number, marks: number, mixed: boolean, onePoint = 
     case 'match':
     case 'passage':
     case 'stimulus':
+    case 'picture':
       throw new Error('handled separately');
   }
 }
@@ -155,7 +174,8 @@ const lowerFirst = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
  * Builds a paper from the chosen chapters' question banks, following a layout.
  * Same banks + layout + seed always give the same paper, so it can be reprinted.
  */
-export function generatePaper(spec: PaperSpec, banks: ChapterBank[], seed: number): Paper {
+export function generatePaper(baseSpec: PaperSpec, banks: ChapterBank[], seed: number): Paper {
+  const spec = resolveSpec(baseSpec, banks[0]?.subjectId);
   const rand = rng(seed);
   const warnings: string[] = [];
   const used = new Set<string>();
@@ -191,6 +211,7 @@ export function generatePaper(spec: PaperSpec, banks: ChapterBank[], seed: numbe
         questions.push({
           number: ++number, heading: qs.heading, marks: picked.length * qs.marksEach,
           items: picked.map((t, i) => toItem(t, i, qs.marksEach, mixed, qs.onePoint)),
+          marksEach: qs.marksEach,
         });
       } else if (qs.kind === 'match') {
         const [m] = take((t) => t.q.type === 'match' && t.q.pairs.length >= qs.count, 1);
@@ -224,6 +245,20 @@ export function generatePaper(spec: PaperSpec, banks: ChapterBank[], seed: numbe
           chart: { title: st.q.title, yLabel: st.q.yLabel, bars: st.q.bars, source: st.q.source },
           items: parts.map((p, i) => ({ label: `${ROMAN[i]}.`, text: p.q, marks: qs.marksEach, lines: 2, answer: p.answer, source: `${st.chapter}, ${pages(st.q.page)}` })),
         });
+      } else if (qs.kind === 'picture') {
+        // picture study: each picture is worth marksEach in total (split over its parts)
+        const pics = take((t) => t.q.type === 'picture' && marksOf(t.q) === qs.marksEach, qs.count);
+        if (pics.length < qs.count) warnings.push(`Only ${pics.length} of ${qs.count} pictures for "${qs.heading}". Add more chapters for a full paper.`);
+        if (!pics.length) continue;
+        const pictures = pics.map((t) => {
+          const q = t.q as Extract<BankQuestion, { type: 'picture' }>;
+          let n = 0;
+          return {
+            scene: q.scene, image: q.image,
+            parts: q.parts.map((pt) => ({ label: `${ROMAN[n++]}.`, text: pt.q, marks: pt.marks, lines: pt.marks * 2, answer: pt.answer, source: `${t.chapter}, ${pages(q.page)}` })),
+          };
+        });
+        questions.push({ number: ++number, heading: qs.heading, marks: pics.length * qs.marksEach, items: pictures.flatMap((p) => p.parts), pictures });
       } else if (qs.kind === 'map') {
         const candidates = features.filter((f) => !usedFeatures.has(f.id) && (qs.mode === 'mark' || f.identify));
         const chosen = candidates.slice(0, qs.count);
@@ -261,7 +296,7 @@ export function generatePaper(spec: PaperSpec, banks: ChapterBank[], seed: numbe
     specId: spec.id, title: spec.title, subject: banks[0]?.subject ?? '', chapters,
     minutes: spec.minutes, answerSpace: spec.answerSpace, seed,
     marks: sections.reduce((a, s) => a + s.marks, 0), sections, warnings,
-    instructions: spec.instructions, notes: spec.notes, mapAtEnd: spec.mapAtEnd,
+    instructions: spec.instructions, notes: spec.notes, mapAtEnd: spec.mapAtEnd, numbering: spec.numbering,
   };
 }
 

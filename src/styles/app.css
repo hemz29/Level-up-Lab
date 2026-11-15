@@ -687,3 +687,13 @@ main { max-width: 1180px; margin: 0 auto; padding: 24px; }
 .paper-map-title { font-weight: 700; margin: 8px 0; }
 .q-map.big { max-width: 520px; width: 100%; margin: 0 auto; }
 @media print { .q-map.big { max-width: 150mm; margin: 0 auto; } .paper-map-page { border-top: 0; margin-top: 0; } }
+.q-head.roman { gap: 14px; }
+.q-head.roman .q-num { min-width: 28px; }
+.q-body p { white-space: pre-line; }
+.q-pictures { width: 100%; border-collapse: collapse; margin-top: 8px; }
+.q-pictures td { border: 1px solid #222; vertical-align: top; padding: 8px 10px; width: 50%; }
+.pic-cell img { width: 100%; height: auto; display: block; }
+.pic-placeholder { border: 1.5px dashed #888; min-height: 150px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 10px; color: #444; font-style: italic; }
+.pic-placeholder span { font-style: normal; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: #888; }
+.pic-num { font-weight: 700; margin: 0; }
+.pic-part p { margin: 4px 0; }

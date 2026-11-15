@@ -1,5 +1,5 @@
 {
-  "_note": "Unit Test matches the school's Grade 6 UT-2 Geography paper (7 questions, all 1-mark parts, 25 marks, 40 min). Half-yearly/Annual layouts are still provisional until a sample 80-mark paper is supplied.",
+  "_note": "Unit Test layouts match the school's Grade 6 UT-2 papers: Geography (default) and History & Civics (subjects.history). 80-mark layouts are provisional until a sample is supplied.",
   "papers": [
     {
       "id": "practice",
@@ -60,7 +60,62 @@
             }
           ]
         }
-      ]
+      ],
+      "subjects": {
+        "history": {
+          "numbering": "roman",
+          "sections": [
+            {
+              "title": "",
+              "questions": [
+                {
+                  "kind": "pick",
+                  "types": [
+                    "mcq"
+                  ],
+                  "heading": "Choose the Correct Answer.",
+                  "count": 6,
+                  "marksEach": 1
+                },
+                {
+                  "kind": "pick",
+                  "types": [
+                    "fill"
+                  ],
+                  "heading": "Fill in the Blanks",
+                  "count": 4,
+                  "marksEach": 1
+                },
+                {
+                  "kind": "pick",
+                  "types": [
+                    "name"
+                  ],
+                  "heading": "Name the Following",
+                  "count": 4,
+                  "marksEach": 1,
+                  "singleAnswer": true
+                },
+                {
+                  "kind": "pick",
+                  "types": [
+                    "reason"
+                  ],
+                  "heading": "Give reasons for the Following",
+                  "count": 2,
+                  "marksEach": 2
+                },
+                {
+                  "kind": "picture",
+                  "heading": "Picture Study",
+                  "count": 1,
+                  "marksEach": 2
+                }
+              ]
+            }
+          ]
+        }
+      }
     },
     {
       "id": "unit-test",
@@ -141,21 +196,122 @@
         "In all Map Work, make wise use of arrows to avoid overcrowding of the map.",
         "The Map given at the end of this question paper must be detached, and after marking, must be fastened to your answer booklet."
       ],
-      "mapAtEnd": true
+      "mapAtEnd": true,
+      "subjects": {
+        "history": {
+          "title": "Unit Test",
+          "minutes": 40,
+          "answerSpace": false,
+          "instructions": [
+            "Answers to this paper must be written on the answer sheet provided separately.",
+            "The intended marks for questions or parts of questions are given in the brackets ( )."
+          ],
+          "notes": [],
+          "mapAtEnd": false,
+          "numbering": "roman",
+          "sections": [
+            {
+              "title": "",
+              "questions": [
+                {
+                  "kind": "pick",
+                  "types": [
+                    "mcq"
+                  ],
+                  "heading": "Choose the Correct Answer.",
+                  "count": 6,
+                  "marksEach": 0.5,
+                  "anyMarks": true
+                },
+                {
+                  "kind": "pick",
+                  "types": [
+                    "reason"
+                  ],
+                  "heading": "Give reasons for the Following",
+                  "count": 2,
+                  "marksEach": 1,
+                  "anyMarks": true
+                },
+                {
+                  "kind": "pick",
+                  "types": [
+                    "name"
+                  ],
+                  "heading": "Name the Following",
+                  "count": 4,
+                  "marksEach": 1,
+                  "singleAnswer": true
+                },
+                {
+                  "kind": "pick",
+                  "types": [
+                    "fill"
+                  ],
+                  "heading": "Fill in the Blanks",
+                  "count": 4,
+                  "marksEach": 1
+                },
+                {
+                  "kind": "pick",
+                  "types": [
+                    "short"
+                  ],
+                  "heading": "Answer the following questions in two or three sentences.",
+                  "count": 4,
+                  "marksEach": 2
+                },
+                {
+                  "kind": "picture",
+                  "heading": "Picture Study",
+                  "count": 2,
+                  "marksEach": 2
+                }
+              ]
+            }
+          ]
+        }
+      }
     },
     {
       "id": "half-yearly",
       "title": "Half-Yearly Examination",
       "minutes": 120,
       "answerSpace": false,
-      "sections": "@exam80"
+      "sections": "@exam80",
+      "subjects": {
+        "history": {
+          "minutes": 120,
+          "answerSpace": false,
+          "instructions": [
+            "Answers to this paper must be written on the answer sheet provided separately.",
+            "The intended marks for questions or parts of questions are given in the brackets ( )."
+          ],
+          "notes": [],
+          "numbering": "roman",
+          "sections": "@hist80"
+        }
+      }
     },
     {
       "id": "annual",
       "title": "Annual Examination",
       "minutes": 120,
       "answerSpace": false,
-      "sections": "@exam80"
+      "sections": "@exam80",
+      "subjects": {
+        "history": {
+          "minutes": 120,
+          "answerSpace": false,
+          "instructions": [
+            "Answers to this paper must be written on the answer sheet provided separately.",
+            "The intended marks for questions or parts of questions are given in the brackets ( )."
+          ],
+          "notes": [],
+          "numbering": "roman",
+          "sections": "@hist80"
+        }
+      }
     }
   ],
   "layouts": {
@@ -243,6 +399,76 @@
             "heading": "On the same map, mark and name the following.",
             "count": 5,
             "marksEach": 1
+          }
+        ]
+      }
+    ],
+    "hist80": [
+      {
+        "title": "",
+        "questions": [
+          {
+            "kind": "pick",
+            "types": [
+              "mcq"
+            ],
+            "heading": "Choose the Correct Answer.",
+            "count": 16,
+            "marksEach": 0.5,
+            "anyMarks": true
+          },
+          {
+            "kind": "pick",
+            "types": [
+              "reason"
+            ],
+            "heading": "Give reasons for the Following",
+            "count": 6,
+            "marksEach": 1,
+            "anyMarks": true
+          },
+          {
+            "kind": "pick",
+            "types": [
+              "name"
+            ],
+            "heading": "Name the Following",
+            "count": 8,
+            "marksEach": 1,
+            "singleAnswer": true
+          },
+          {
+            "kind": "pick",
+            "types": [
+              "fill"
+            ],
+            "heading": "Fill in the Blanks",
+            "count": 8,
+            "marksEach": 1
+          },
+          {
+            "kind": "pick",
+            "types": [
+              "short"
+            ],
+            "heading": "Answer the following questions in two or three sentences.",
+            "count": 10,
+            "marksEach": 2
+          },
+          {
+            "kind": "pick",
+            "types": [
+              "long"
+            ],
+            "heading": "Answer the following questions in detail.",
+            "count": 5,
+            "marksEach": 4
+          },
+          {
+            "kind": "picture",
+            "heading": "Picture Study",
+            "count": 5,
+            "marksEach": 2
           }
         ]
       }
