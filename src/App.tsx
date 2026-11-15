@@ -8,6 +8,7 @@ import * as cloud from './lib/cloud';
 import type { ChildRow } from './lib/cloud';
 import { closeChild, onSyncStatus, openChild, type SyncStatus } from './lib/sync';
 import { AccountContext, useAccount, type Account } from './lib/account';
+import { useUpdateAvailable } from './lib/appUpdate';
 import { Setup } from './screens/Setup';
 import { Home } from './screens/Home';
 import { PlanBuilder } from './screens/PlanBuilder';
@@ -143,6 +144,7 @@ function AppShell() {
   });
   useEffect(() => { try { localStorage.setItem(screenKey, screen); } catch { /* private mode */ } }, [screenKey, screen]);
   const [sync, setSync] = useState<SyncStatus>('saved');
+  const [updateReady, applyUpdate] = useUpdateAvailable();
 
   useEffect(() => onSyncStatus(setSync), []);
   useEffect(() => { if (activeBlock) setScreen('session'); }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -165,6 +167,7 @@ function AppShell() {
           </nav>
         )}
         <div className="topbar-right">
+          {updateReady && !activeBlock && <button className="btn small primary" onClick={applyUpdate} title="A new version of Level-Up Lab is ready">✨ Update</button>}
           {account.mode === 'cloud' && sync === 'offline' && <span className="pill small" title="Saved on this device. It will sync when you're back online.">Offline</span>}
           <button className="btn ghost small" onClick={() => setMuted(!muted)} aria-label={muted ? 'Turn sound on' : 'Mute sound'}>{muted ? '🔇' : '🔊'}</button>
           {!inRoom && account.mode === 'cloud' && <button className="btn ghost small" onClick={account.switchChild} title="Switch child">{profile.name} ▾</button>}
