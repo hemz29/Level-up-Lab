@@ -667,3 +667,23 @@ main { max-width: 1180px; margin: 0 auto; padding: 24px; }
 .song-audio { width: min(460px, 100%); }
 .song-row { display: flex; flex-direction: column; gap: 8px; }
 .song-title { font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; flex: 1; min-width: 180px; }
+
+/* ---------- school paper format ---------- */
+.paper-school-instr { font-style: italic; font-size: 0.9rem; margin: 10px 0 4px; }
+.paper-school-instr p { margin: 2px 0; }
+.paper-notes { font-style: italic; font-size: 0.88rem; border-top: 1px solid var(--ink); padding: 8px 0 4px; margin-bottom: 8px; }
+.paper-notes ol { margin: 2px 0 0; padding-left: 1.6em; }
+.q-head.sub { font-weight: 700; margin-top: 2px; }
+.q-head .q-num { font-family: inherit; font-weight: 700; letter-spacing: 0.02em; }
+.q-item .q-marks.item { margin-left: auto; padding-left: 12px; font-weight: 400; white-space: nowrap; }
+.q-label { min-width: 32px; }
+.q-fill { margin: 8px auto 0; min-width: 70%; }
+.q-fill td:first-child, .q-fill th:first-child { width: 64px; text-align: center; }
+.q-fill td { height: 2.2em; }
+.q-chart { margin: 10px auto; max-width: 560px; }
+.q-chart svg { width: 100%; height: auto; display: block; }
+.q-chart figcaption { font-size: 0.75rem; color: #666; text-align: right; }
+.paper-map-page { break-before: page; margin-top: 28px; border-top: 2px dashed #bbb; padding-top: 16px; text-align: center; }
+.paper-map-title { font-weight: 700; margin: 8px 0; }
+.q-map.big { max-width: 520px; width: 100%; margin: 0 auto; }
+@media print { .q-map.big { max-width: 150mm; margin: 0 auto; } .paper-map-page { border-top: 0; margin-top: 0; } }

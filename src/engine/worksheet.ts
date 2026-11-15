@@ -4,13 +4,19 @@ import papersConfig from '../config/papers.json';
 /* ---------- paper layouts ---------- */
 
 export type QuestionSpec =
-  | { kind: 'pick'; types: QType[]; heading: string; count: number; marksEach: number }
+  | { kind: 'pick'; types: QType[]; heading: string; count: number; marksEach: number; anyMarks?: boolean; onePoint?: boolean; singleAnswer?: boolean }
+  | { kind: 'table'; heading: string; count: number; marksEach: number }
+  | { kind: 'stimulus'; heading: string; count: number; marksEach: number }
   | { kind: 'match'; heading: string; count: number; marksEach: number }
   | { kind: 'map'; mode: 'mark' | 'identify'; heading: string; count: number; marksEach: number }
   | { kind: 'structured'; heading: string; count: number; marks: number };
 
 export interface SectionSpec { title: string; questions: QuestionSpec[] }
-export interface PaperSpec { id: string; title: string; minutes: number | null; answerSpace: boolean; sections: SectionSpec[] }
+export interface PaperSpec {
+  id: string; title: string; minutes: number | null; answerSpace: boolean; sections: SectionSpec[];
+  /** school style: instructions under the header, notes box, map printed at the end */
+  instructions?: string[]; notes?: string[]; mapAtEnd?: boolean;
+}
 
 export function paperSpecs(): PaperSpec[] {
   const layouts = papersConfig.layouts as Record<string, SectionSpec[]>;
@@ -49,6 +55,8 @@ export interface PaperQuestion {
   items: PaperItem[];
   passage?: string;
   match?: { leftTitle: string; rightTitle: string; left: string[]; right: string[] };
+  fillTable?: { leftTitle: string; rightTitle: string; left: string[] };
+  chart?: { title: string; yLabel: string; bars: { label: string; value: number; note?: string }[]; source?: string };
   map?: MapTask;
 }
 
@@ -65,6 +73,9 @@ export interface Paper {
   marks: number;
   sections: PaperSection[];
   warnings: string[];
+  instructions?: string[];
+  notes?: string[];
+  mapAtEnd?: boolean;
 }
 
 /* ---------- helpers ---------- */
@@ -101,11 +112,12 @@ function marksOf(q: BankQuestion): number {
     case 'reason': case 'difference': return 2;
     case 'short': case 'long': return q.marks;
     case 'passage': return q.parts.reduce((a, p) => a + p.marks, 0);
+    case 'stimulus': return q.parts.length;
     default: return 1;
   }
 }
 
-function toItem(t: Tagged, i: number, marks: number, mixed: boolean): PaperItem {
+function toItem(t: Tagged, i: number, marks: number, mixed: boolean, onePoint = false): PaperItem {
   const { q, chapter } = t;
   const source = `${chapter}, ${pages(q.page)}`;
   const base = { label: label(i), marks, source, topic: q.topic ? `${chapter}:${q.topic}` : undefined };
@@ -121,6 +133,7 @@ function toItem(t: Tagged, i: number, marks: number, mixed: boolean): PaperItem 
     case 'reason':
       return { ...base, text: mixed ? `Give a reason: ${q.q}` : q.q, lines: 3, answer: q.answer };
     case 'difference':
+      if (onePoint) return { ...base, text: `${cap(q.a)} and ${q.b}.`, table: [[cap(q.a), cap(q.b)], q.rows[0]], lines: 2, answer: `${q.rows[0][0]} | ${q.rows[0][1]}` };
       return { ...base, text: `Distinguish between ${q.a} and ${q.b}.`, table: [[cap(q.a), cap(q.b)], ...q.rows], lines: 4, answer: q.rows.map(([a, b]) => `${a} | ${b}`).join('\n') };
     case 'short':
       return { ...base, text: q.q, lines: q.marks === 3 ? 5 : 4, answer: q.answer };
@@ -128,6 +141,7 @@ function toItem(t: Tagged, i: number, marks: number, mixed: boolean): PaperItem 
       return { ...base, text: q.q, lines: 9, answer: q.answer };
     case 'match':
     case 'passage':
+    case 'stimulus':
       throw new Error('handled separately');
   }
 }
@@ -169,13 +183,14 @@ export function generatePaper(spec: PaperSpec, banks: ChapterBank[], seed: numbe
     const questions: PaperQuestion[] = [];
     for (const qs of sec.questions) {
       if (qs.kind === 'pick') {
-        const picked = take((t) => qs.types.includes(t.q.type) && marksOf(t.q) === qs.marksEach, qs.count);
+        const single = (t: Tagged) => !qs.singleAnswer || ('answer' in t.q && !/\b(and|any|two)\b|,|;/i.test(t.q.answer) && !/^(any|two|the two)\b/i.test('q' in t.q ? t.q.q : ''));
+        const picked = take((t) => qs.types.includes(t.q.type) && (qs.anyMarks || marksOf(t.q) === qs.marksEach) && single(t), qs.count);
         if (picked.length < qs.count) warnings.push(`Only ${picked.length} of ${qs.count} questions for "${qs.heading}". Add more chapters for a full paper.`);
         if (!picked.length) continue;
         const mixed = qs.types.length > 1;
         questions.push({
           number: ++number, heading: qs.heading, marks: picked.length * qs.marksEach,
-          items: picked.map((t, i) => toItem(t, i, qs.marksEach, mixed)),
+          items: picked.map((t, i) => toItem(t, i, qs.marksEach, mixed, qs.onePoint)),
         });
       } else if (qs.kind === 'match') {
         const [m] = take((t) => t.q.type === 'match' && t.q.pairs.length >= qs.count, 1);
@@ -189,6 +204,25 @@ export function generatePaper(spec: PaperSpec, banks: ChapterBank[], seed: numbe
             label: label(i), text: p[0], marks: qs.marksEach, lines: 0,
             answer: `(${LETTERS[i]}) ${p[0]} – (${ROMAN[right.indexOf(p[1])]}) ${p[1]}`, source: `${m.chapter}, ${pages(m.q.page)}`,
           })),
+        });
+      } else if (qs.kind === 'table') {
+        // "Complete the following table": the left column is given, the right is filled in
+        const [m] = take((t) => t.q.type === 'match' && t.q.pairs.length >= qs.count, 1);
+        if (!m || m.q.type !== 'match') { warnings.push('No table set available.'); continue; }
+        const pairs = shuffle(m.q.pairs, rand).slice(0, qs.count);
+        questions.push({
+          number: ++number, heading: qs.heading, marks: pairs.length * qs.marksEach,
+          fillTable: { leftTitle: m.q.left, rightTitle: m.q.right, left: pairs.map((p) => p[0]) },
+          items: pairs.map((p, i) => ({ label: `${ROMAN[i]}.`, text: p[0], marks: qs.marksEach, lines: 0, answer: `${p[0]}: ${p[1]}`, source: `${m.chapter}, ${pages(m.q.page)}` })),
+        });
+      } else if (qs.kind === 'stimulus') {
+        const [st] = take((t) => t.q.type === 'stimulus' && t.q.parts.length >= qs.count, 1);
+        if (!st || st.q.type !== 'stimulus') { warnings.push('No illustration-based question available.'); continue; }
+        const parts = st.q.parts.slice(0, qs.count);
+        questions.push({
+          number: ++number, heading: qs.heading, marks: parts.length * qs.marksEach,
+          chart: { title: st.q.title, yLabel: st.q.yLabel, bars: st.q.bars, source: st.q.source },
+          items: parts.map((p, i) => ({ label: `${ROMAN[i]}.`, text: p.q, marks: qs.marksEach, lines: 2, answer: p.answer, source: `${st.chapter}, ${pages(st.q.page)}` })),
         });
       } else if (qs.kind === 'map') {
         const candidates = features.filter((f) => !usedFeatures.has(f.id) && (qs.mode === 'mark' || f.identify));
@@ -227,6 +261,7 @@ export function generatePaper(spec: PaperSpec, banks: ChapterBank[], seed: numbe
     specId: spec.id, title: spec.title, subject: banks[0]?.subject ?? '', chapters,
     minutes: spec.minutes, answerSpace: spec.answerSpace, seed,
     marks: sections.reduce((a, s) => a + s.marks, 0), sections, warnings,
+    instructions: spec.instructions, notes: spec.notes, mapAtEnd: spec.mapAtEnd,
   };
 }
 

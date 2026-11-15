@@ -253,6 +253,66 @@ export const ch7SouthAmerica: ChapterBank = {
     { id: 'sq16', topic: 'galapagos', type: 'short', marks: 2, page: 129, q: 'State any two features of the Galapagos Islands.', answer: 'Any two: they lie in the Pacific Ocean off the coast of Ecuador and belong to Ecuador; they are remote, isolated islands; they are the natural home of giant tortoises; they have a variety of unique flora and fauna.' },
     { id: 'sq17', topic: 'hunting', type: 'short', marks: 2, page: [131, 132], q: 'What is the occupation of the Amerindians?', answer: 'They depend on the forest: food gathering, fishing along the river banks, hunting in groups (with bows, arrows, spears and traps) and shifting cultivation.' },
     { id: 'sq18', topic: 'depletion', type: 'short', marks: 2, page: 133, q: 'State any two reasons for the rapid decline of the Selvas.', answer: 'Any two: shifting cultivation (slash-and-burn), ranching, mining, logging, urbanisation, forest fires.' },
+
+    // ---------- From the school's Unit Test 2 paper (school wording) ----------
+    { id: 'ut1', topic: 'amerindians', type: 'name', page: 131, q: 'The native people of the Amazon Rainforest', answer: 'The Amerindians (Native Americans)' },
+    { id: 'ut2', topic: 'drake', type: 'name', page: 123, q: 'The narrow waterbody between Antarctica and South America that connects the Atlantic and Pacific Oceans', answer: 'The Drake Passage' },
+    { id: 'ut3', topic: 'cotopaxi', type: 'name', page: 127, q: 'The highest active volcanic peak in South America', answer: 'Cotopaxi' },
+    { id: 'ut4', topic: 'shifting', type: 'name', page: 132, q: 'The method of cultivation practised by the Native Americans', answer: 'Shifting cultivation (slash-and-burn)' },
+    { id: 'ut5', topic: 'dwellers', type: 'reason', page: 134, q: 'Many forest dwellers in the Amazon rainforest are moving to cities or taking up tourism as their occupation.', answer: 'Their forest habitat is being destroyed by deforestation, so they can no longer live off the forest; they migrate to cities or depend on tourism for a living.' },
+    { id: 'ut6', topic: 'pampas', type: 'reason', page: 129, q: 'The Pampas of Argentina and Uruguay are ideal for cattle rearing.', answer: 'They are vast, fertile, grassy lowlands that provide excellent pastures.' },
+    { id: 'ut7', topic: 'peninsula', type: 'difference', page: [123, 124], a: 'peninsula', b: 'landlocked', rows: [['Land surrounded by water on three sides and joined to the mainland on one side', 'A country entirely surrounded by land, with no coastline'], ['e.g. South America', 'e.g. Bolivia, Paraguay']] },
+
+    // ---------- 1-mark short answers (school's "Answer the following questions") ----------
+    { id: 'o1', topic: 'latin', type: 'short', marks: 1, page: 122, q: 'What are all the countries that make up Latin America?', answer: 'The countries of South America, Mexico, Central America and the Caribbean islands.' },
+    { id: 'o2', topic: 'carbonsink', type: 'short', marks: 1, page: 133, q: 'Why are rainforests called a carbon sink?', answer: 'They absorb carbon dioxide from the atmosphere and store large amounts of carbon in their trees.' },
+    { id: 'o3', topic: 'pantanal', type: 'short', marks: 1, page: 130, q: 'What makes the Pantanal in Brazil famous?', answer: 'It is one of the largest tropical wetlands in the world, home to jaguars, caimans, capybaras and hundreds of bird species.' },
+    { id: 'o4', topic: 'titicaca', type: 'short', marks: 1, page: 127, q: 'What makes Lake Titicaca the most famous lake in the world?', answer: 'It is the highest navigable water body (lake) in the world.' },
+    { id: 'o5', topic: 'tributaries', type: 'short', marks: 1, page: 128, q: 'Where does the Amazon River originate? Name any one of its tributaries.', answer: 'In the Andes Mountains. Tributaries: Maranon, Negro, Madeira or Tapajos (any one).' },
+    { id: 'o6', topic: 'extent', type: 'short', marks: 1, page: 122, q: 'What is the latitudinal extent of South America?', answer: 'From 13° N to 55° S latitude.' },
+    { id: 'o7', topic: 'languages', type: 'short', marks: 1, page: 122, q: 'Which two languages are mainly spoken in South America?', answer: 'Spanish and Portuguese.' },
+    { id: 'o8', topic: 'brazilfacts', type: 'short', marks: 1, page: 124, q: "Why is Brazil called the 'coffee pot of the world'?", answer: 'Because it leads the world in coffee production.' },
+    { id: 'o9', topic: 'galapagos', type: 'short', marks: 1, page: 129, q: 'Where are the Galapagos Islands located?', answer: 'In the Pacific Ocean, off the coast of Ecuador (they belong to Ecuador).' },
+    { id: 'o10', topic: 'tierra', type: 'short', marks: 1, page: 129, q: 'What is Tierra del Fuego?', answer: 'An archipelago (group of islands) at the extreme south of South America, separated from the mainland by the Strait of Magellan.' },
+    { id: 'o11', topic: 'iguazu', type: 'short', marks: 1, page: 130, q: 'Where is Iguazu Falls and what makes it special?', answer: 'On the Brazil–Argentina border; it is a system of 275 falls along the Iguazu River.' },
+    { id: 'o12', topic: 'plata', type: 'short', marks: 1, page: 129, q: 'What is the Rio de la Plata?', answer: 'The combined river system formed when the Uruguay River joins the Parana in its lower course.' },
+    { id: 'o13', topic: 'orinocosource', type: 'short', marks: 1, page: 129, q: 'What separates the Orinoco Basin from the Amazon Basin?', answer: 'The Guiana Highlands.' },
+    { id: 'o14', topic: 'atacama', type: 'short', marks: 1, page: 129, q: 'Why is the Atacama Desert important even though it has almost no vegetation?', answer: 'It is rich in minerals such as copper, gold and silver.' },
+    { id: 'o15', topic: 'shifting', type: 'short', marks: 1, page: 132, q: 'What is the slash-and-burn method?', answer: 'Clearing a patch of forest by cutting down the trees and burning them, before farming the land.' },
+    { id: 'o16', topic: 'machu', type: 'short', marks: 1, page: 127, q: 'Which ancient civilisation built Machu Picchu, and in which country is it?', answer: 'The Incas; in Peru.' },
+    { id: 'o17', topic: 'landlocked', type: 'short', marks: 1, page: 124, q: 'Name the two landlocked countries of South America.', answer: 'Bolivia and Paraguay.' },
+    { id: 'o18', topic: 'aconcagua', type: 'short', marks: 1, page: 127, q: "Which peak is called the 'Roof of the Americas' and how high is it?", answer: 'Aconcagua, 6,959 m.' },
+
+    // ---------- Illustration-based (bar charts) ----------
+    { id: 'st1', topic: 'co2', type: 'stimulus', page: 133, title: 'Rising CO₂ emissions from deforestation of the Brazilian Amazon', yLabel: 'CO₂ (million metric tons)',
+      bars: [{ label: '2010', value: 260 }, { label: '2011', value: 240 }, { label: '2012', value: 170, note: 'decadal low' }, { label: '2013', value: 220 }, { label: '2014', value: 185 }, { label: '2015', value: 230 }, { label: '2016', value: 293 }, { label: '2017', value: 258 }, { label: '2018', value: 280 }, { label: '2019', value: 378 }, { label: '2020', value: 413, note: '+143% since the decadal low; +9% since last year' }],
+      source: 'Data as shown in the school paper',
+      parts: [
+        { q: 'In which year were CO₂ emissions from deforestation in the Brazilian Amazon at their lowest?', answer: '2012.' },
+        { q: 'By what percentage did CO₂ emissions increase from the decadal low to the peak shown in the graph?', answer: '143%.' },
+        { q: 'What does the 9% rise in CO₂ emissions between 2019 and 2020 indicate about deforestation trends in the Brazilian Amazon?', answer: 'Deforestation is increasing: more forest is being cut and burnt, releasing more stored carbon dioxide.' },
+      ] },
+    { id: 'st2', topic: 'heights', type: 'stimulus', page: [127, 128], title: 'Heights of some natural features of South America', yLabel: 'Height (metres)',
+      bars: [{ label: 'Aconcagua', value: 6959 }, { label: 'Cotopaxi', value: 5911 }, { label: 'Angel Falls', value: 979 }],
+      parts: [
+        { q: "Which feature in the graph is known as the 'Roof of the Americas'?", answer: 'Aconcagua (6,959 m).' },
+        { q: 'Which feature in the graph is an active volcano? Name the mountain range it belongs to.', answer: 'Cotopaxi; the Andes.' },
+        { q: 'Angel Falls is the shortest bar in the graph, yet it holds a world record. What is it?', answer: "It is the world's highest waterfall (979 m)." },
+      ] },
+    { id: 'st3', topic: 'amazonshare', type: 'stimulus', page: 131, title: 'Share of the Amazon rainforest by country', yLabel: 'Share of the forest (%)',
+      bars: [{ label: 'Brazil', value: 66 }, { label: 'Other countries', value: 34 }],
+      parts: [
+        { q: 'Which country has the largest share of the Amazon rainforest?', answer: 'Brazil.' },
+        { q: 'About what fraction of the rainforest lies in that country?', answer: 'About two-thirds.' },
+        { q: "Why is the Amazon rainforest called the 'lungs of the planet'?", answer: 'It produces large amounts of oxygen and absorbs carbon dioxide.' },
+      ] },
+    { id: 'st4', topic: 'lengths', type: 'stimulus', page: [124, 128], title: 'Length of the Andes and the Amazon', yLabel: 'Length (km)',
+      bars: [{ label: 'Andes Mountains', value: 7000 }, { label: 'River Amazon', value: 6437 }],
+      parts: [
+        { q: 'Which is longer, the Andes or the Amazon, and by roughly how many kilometres?', answer: 'The Andes, by about 560 km (7,000 km vs 6,437 km).' },
+        { q: 'Into which ocean does the Amazon flow?', answer: 'The Atlantic Ocean.' },
+        { q: 'What type of mountains are the Andes?', answer: 'Young fold mountains.' },
+      ] },
   ],
 
   // Positions (lat, lon) are approximate centres, used to place letters on the outline map.

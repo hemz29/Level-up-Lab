@@ -5,10 +5,10 @@ The **Worksheets** tab builds printable papers from the school's own textbook ch
 | Paper | Marks | Time | Layout |
 | --- | --- | --- | --- |
 | Practice Worksheet | 22 | as needed | objective questions, reasons, identify-on-map, with space to write |
-| Unit Test | 25 | 45 min | A: MCQ + fill/name (10) · B: short answers (6) + one long answer (4) · C: map work (5) |
+| Unit Test | 25 | 40 min | School format: Q1 mark 5 places on the map · Q2 identify 4 statements · Q3 give 3 reasons · Q4 differentiate 2 (one point each) · Q5 answer 3 from a graph · Q6 complete a 3-row table · Q7 answer 5 short questions (every part 1 mark) |
 | Half-Yearly / Annual | 80 | 2 hours | A: MCQ, fill, name, match, terms, reasons (40) · B: five 6-mark questions incl. a passage (30) · C: identify + mark on map (10) |
 
-The layouts live in [`src/config/papers.json`](../src/config/papers.json) and are **provisional**. Send a real school paper and they'll be changed to match it exactly.
+The **Unit Test** follows the school's Grade 6 UT-2 format (7 questions, every part 1 mark, map on the last page). Half-yearly/Annual layouts in [`src/config/papers.json`](../src/config/papers.json) are still provisional until a sample 80-mark paper is supplied.
 
 ## How it stays grounded
 

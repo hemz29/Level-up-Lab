@@ -3,7 +3,7 @@
  * Every item carries the page it comes from, so answer keys can say where to look.
  * Questions and passages are written fresh from the chapter's facts (not copied text).
  */
-export type QType = 'mcq' | 'fill' | 'name' | 'define' | 'match' | 'reason' | 'difference' | 'short' | 'long' | 'passage';
+export type QType = 'mcq' | 'fill' | 'name' | 'define' | 'match' | 'reason' | 'difference' | 'short' | 'long' | 'passage' | 'stimulus';
 
 interface Base {
   id: string;
@@ -19,11 +19,21 @@ export interface DefineQ extends Base { type: 'define'; term: string; answer: st
 export interface MatchQ extends Base { type: 'match'; q: string; left: string; right: string; pairs: [string, string][] }
 export interface ReasonQ extends Base { type: 'reason'; q: string; answer: string }
 export interface DifferenceQ extends Base { type: 'difference'; a: string; b: string; rows: [string, string][] }
-export interface ShortQ extends Base { type: 'short'; q: string; answer: string; marks: 2 | 3 }
+export interface ShortQ extends Base { type: 'short'; q: string; answer: string; marks: 1 | 2 | 3 }
 export interface LongQ extends Base { type: 'long'; q: string; answer: string; marks: 4 | 5 }
 export interface PassageQ extends Base { type: 'passage'; text: string; parts: { q: string; answer: string; marks: number }[] }
 
-export type BankQuestion = McqQ | FillQ | NameQ | DefineQ | MatchQ | ReasonQ | DifferenceQ | ShortQ | LongQ | PassageQ;
+/** "Answer with the help of the given illustration": a bar chart drawn from data, with 1-mark parts. */
+export interface StimulusQ extends Base {
+  type: 'stimulus';
+  title: string;
+  yLabel: string;
+  bars: { label: string; value: number; note?: string }[];
+  source?: string;
+  parts: { q: string; answer: string }[];
+}
+
+export type BankQuestion = McqQ | FillQ | NameQ | DefineQ | MatchQ | ReasonQ | DifferenceQ | ShortQ | LongQ | PassageQ | StimulusQ;
 
 export interface MapFeature {
   id: string;

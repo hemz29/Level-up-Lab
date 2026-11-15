@@ -24,7 +24,7 @@ export function OutlineMap({ map = 'south-america', marks = [], showNames = fals
   const m = MAPS[map];
   return (
     <svg className={`outline-map ${className}`} viewBox={`0 0 ${m.width} ${m.height}`} role="img" aria-label={`Outline map of ${m.name}`}>
-      <rect x="0" y="0" width={m.width} height={m.height} fill="#fff" stroke="#222" strokeWidth="1.5" />
+      <rect x="1" y="1" width={m.width - 2} height={m.height - 2} fill="#fff" stroke="#222" strokeWidth="1.5" />
       <path d={m.d} fill="#fff" stroke="#222" strokeWidth="0.9" strokeLinejoin="round" />
       {marks.filter((f) => f.letter).map((f) => {
         const [x, y] = project(m, f.lat, f.lon);

@@ -13,6 +13,21 @@ describe('paper layouts', () => {
   });
 });
 
+describe('school unit test format', () => {
+  it('matches the school paper: 7 questions, all 1-mark parts, 25 marks, 40 minutes', () => {
+    for (let seed = 1; seed <= 200; seed++) {
+      const p = generatePaper(byId('unit-test'), BANKS, seed);
+      const qs = p.sections.flatMap((s) => s.questions);
+      expect(p.minutes).toBe(40);
+      expect(qs.map((q) => q.marks)).toEqual([5, 4, 3, 2, 3, 3, 5]);
+      expect(qs.every((q) => q.items.every((i) => i.marks === 1))).toBe(true);
+      expect(qs[4].chart?.bars.length).toBeGreaterThan(1);
+      expect(qs[5].fillTable?.left).toHaveLength(3);
+      expect(p.mapAtEnd).toBe(true);
+    }
+  });
+});
+
 describe('paper generator', () => {
   it('builds a full 25-mark unit test from one chapter', () => {
     const p = generatePaper(byId('unit-test'), BANKS, 42);
@@ -66,7 +81,7 @@ describe('paper generator', () => {
     expect(mapQs[1].map).toBeUndefined();
   });
   it('mcq answers point at a real option', () => {
-    const p = generatePaper(byId('unit-test'), BANKS, 9);
+    const p = generatePaper(byId('practice'), BANKS, 9);
     const mcq = p.sections[0].questions[0];
     for (const i of mcq.items) expect(i.options!.some((o) => o === i.answer)).toBe(true);
   });
