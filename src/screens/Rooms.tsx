@@ -17,6 +17,8 @@ export function Rooms({ go }: { go: (s: Screen) => void }) {
   const gate = gateStatus(s, today);
   const balance = balanceOf(s, today);
   const stageIdx = stageIndex(s.creature.stage);
+  const chosen = s.roomChoice?.[today];
+  const chosenName = ROOMS.find((r) => r.id === chosen)?.name;
 
   return (
     <div className="page">
@@ -26,21 +28,24 @@ export function Rooms({ go }: { go: (s: Screen) => void }) {
       </div>
       {!gate.passed && (
         <div className="card hint-card">
-          <strong>Rooms open after today's gate:</strong>
+          <strong>Finish {gate.blocksDone === 0 ? 'your' : 'the rest of your'} study blocks and you get to pick one room for today ({gate.blocksDone} done so far):</strong>
           <ul className="todo">{gate.reasons.map((r) => <li key={r}>{r}</li>)}</ul>
         </div>
       )}
+      {gate.passed && !chosen && balance > 0 && (
+        <div className="card hint-card"><strong>🎉 Blocks done! Pick any one room for today.</strong> <span className="muted">The others open again tomorrow.</span></div>
+      )}
+      {gate.passed && chosen && (
+        <div className="hint"><p>Today's room: <strong>{chosenName}</strong>. You can go back in while you still have play time. Pick a different room tomorrow!</p></div>
+      )}
       {gate.passed && balance <= 0 && (
-        <div className="hint">
-          <p><strong>No play time yet today.</strong> Play time is earned by finishing <em>all</em> the blocks you picked when you started today's session (that gives 15 minutes), then:</p>
-          <ul className="todo"><li>+5 min for a bonus block</li><li>+5 min for each mistake you catch (up to 2)</li><li>+5 to +10 min for a strong recall quiz</li></ul>
-          <p className="small">Tip: if you started with 3 blocks, finish all 3, even if you did extra subjects instead.</p>
-        </div>
+        <div className="hint"><p><strong>Play time used up for today.</strong> A bonus block, a caught mistake or a strong recall quiz each add 5 more minutes.</p></div>
       )}
       <div className="rooms-grid">
         {ROOMS.map((r) => {
           const stageOk = stageIdx >= stageIndex(r.unlockStage);
-          const open = r.ready && stageOk && gate.passed && balance > 0;
+          const notToday = !!chosen && chosen !== r.id;
+          const open = r.ready && stageOk && gate.passed && balance > 0 && !notToday;
           return (
             <div key={r.id} className={`card room ${open ? 'open' : 'locked'}`}>
               <span className="room-icon" aria-hidden="true">{stageOk && r.ready ? r.icon : '🔒'}</span>
@@ -48,7 +53,12 @@ export function Rooms({ go }: { go: (s: Screen) => void }) {
               <p className="muted">{r.blurb}</p>
               {!r.ready ? <p className="small kicker">Coming in a later chapter of the story</p>
                 : !stageOk ? <p className="small kicker">Opens when your egg hatches</p>
-                  : <button className="btn primary" disabled={!open} onClick={() => go(r.id as Screen)}>Enter</button>}
+                  : notToday ? <p className="small kicker">Opens again tomorrow</p>
+                    : <button className="btn primary" disabled={!open} onClick={() => {
+                      if (!chosen && !window.confirm(`Pick the ${r.name} for today? You get one room a day.`)) return;
+                      s.chooseRoom(r.id);
+                      go(r.id as Screen);
+                    }}>{chosen ? 'Go back in' : 'Pick this room'}</button>}
             </div>
           );
         })}

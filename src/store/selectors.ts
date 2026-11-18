@@ -5,6 +5,7 @@ import { playBalance, spentOn } from '../engine/rewards';
 import { addDays, diffDays, weekStart } from '../engine/dates';
 import { REVIEW_SUBJECT_ID, earliestTestDate } from '../engine/planner';
 import { dueTakeaways } from '../engine/recall';
+import { blocksDone as countDone, blocksRequired } from './dayRules';
 
 export const REVIEW_SUBJECT: Subject = { id: REVIEW_SUBJECT_ID, name: 'Boss fight: weekly review', kind: 'memory', color: '#8e6bd8', chapters: [] };
 
@@ -68,13 +69,14 @@ export interface GateStatus {
 
 export function gateStatus(s: AppState, today: DateKey): GateStatus {
   const session = s.sessions[today];
-  const blocksDone = session ? session.blockIds.filter((id) => s.blocks[id]?.completedGate).length : 0;
+  const done = countDone(s, today);
+  const required = blocksRequired(s, today);
   const recallDue = !!session?.recall?.length || (!session?.recallDone && dueTakeaways(Object.values(s.takeaways), today).length > 0);
   const recallDone = !!session?.recallDone;
   const reasons: string[] = [];
-  if (blocksDone === 0) reasons.push('Finish and log at least one study block');
-  if (recallDue && !recallDone) reasons.push("Do today's recall quiz");
+  if (done < required) reasons.push(required - done === 1 ? 'Finish 1 more study block' : `Finish ${required - done} more study blocks (${done} of ${required} done)`);
   if (s.activeBlock?.phase === 'log') reasons.push('Finish logging your current block');
+  const blocksDone = done;
   return { blocksDone, recallDue, recallDone, passed: reasons.length === 0, reasons };
 }
 

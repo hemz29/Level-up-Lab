@@ -8,7 +8,6 @@ import { avoidedSubjects } from '../engine/insights';
 import { looksRight } from '../engine/recall';
 import { computeDayPlay } from '../engine/rewards';
 import { uid } from '../engine/planner';
-import { isValidMistakeNote } from '../engine/insights';
 import { recallScore } from '../engine/recall';
 import {
   chapterTitle, gateStatus, lightDayMinutes, lightTokenAvailable, moodOf, subjectById,
@@ -19,6 +18,7 @@ import { MistakeLogger } from '../components/MistakeLogger';
 import { play } from '../lib/sound';
 import { lines } from '../lib/voice';
 import { Report } from './Report';
+import { dayPlayInput } from '../store/dayRules';
 import type { Screen } from '../App';
 
 export function Session({ go }: { go: (s: Screen) => void }) {
@@ -518,15 +518,7 @@ function WrapUp({ onBack, go }: { onBack: () => void; go: (s: Screen) => void })
   const session = s.sessions[today]!;
   const gate = gateStatus(s, today);
   const blocks = session.blockIds.map((id) => s.blocks[id]).filter(Boolean);
-  const validMistakes = s.mistakes.filter((m) => m.date === today && isValidMistakeNote(m.note)).length;
-  const { parts, total } = computeDayPlay({
-    plannedCount: session.selected.length,
-    gatedPlanned: blocks.filter((b) => !b.extra).length,
-    extraBlocks: blocks.filter((b) => b.extra).length,
-    validMistakes,
-    recallScore: session.recallDone && session.recall?.length ? recallScore(session.recall) : null,
-    gatePassed: gate.passed,
-  });
+  const { parts, total } = computeDayPlay(dayPlayInput(s, today));
   const [showReport, setShowReport] = useState(false);
 
   useEffect(() => { if (gate.passed) play('unlock'); }, []); // eslint-disable-line react-hooks/exhaustive-deps

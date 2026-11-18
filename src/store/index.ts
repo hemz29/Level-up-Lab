@@ -15,6 +15,7 @@ import { computeDayPlay } from '../engine/rewards';
 import { stageFor, stageIndex } from '../engine/creature';
 import { isValidMistakeNote } from '../engine/insights';
 import { applyExams, guessKind, nextColor } from '../engine/curriculum';
+import { dayPlayInput } from './dayRules';
 import { subjectsFromTemplate, TEMPLATES } from '../data/templates';
 
 export function seedSubjects(): Subject[] {
@@ -47,6 +48,7 @@ export function initialState(): AppState {
     papers: [],
     exams: [],
     songs: [],
+    roomChoice: {},
   };
 }
 
@@ -115,6 +117,7 @@ interface Actions {
   removePaper(id: string): void;
   setSchoolName(name: string): void;
   dailyHousekeeping(): void;
+  chooseRoom(roomId: string): void;
   replaceAll(s: AppState): void;
   resetAll(): void;
 }
@@ -145,18 +148,7 @@ function withGp(s: AppState, gp: number, subjectId?: string): Partial<AppState> 
 function recomputeDay(s: AppState, date: DateKey): Partial<AppState> {
   const session = s.sessions[date];
   if (!session) return {};
-  const blocks = session.blockIds.map((id) => s.blocks[id]).filter((b) => b?.completedGate);
-  const recallDue = !!session.recall?.length;
-  const gatePassed = blocks.length > 0 && (!recallDue || session.recallDone) && s.activeBlock?.phase !== 'log';
-  const validMistakes = s.mistakes.filter((m) => m.date === date && isValidMistakeNote(m.note)).length;
-  const { total } = computeDayPlay({
-    plannedCount: session.selected.length,
-    gatedPlanned: blocks.filter((b) => !b.extra).length,
-    extraBlocks: blocks.filter((b) => b.extra).length,
-    validMistakes,
-    recallScore: session.recallDone && session.recall?.length ? recallScore(session.recall) : null,
-    gatePassed,
-  });
+  const { total } = computeDayPlay(dayPlayInput(s, date));
   const ledger = s.ledger.filter((e) => !(e.date === date && e.reason === 'earned'));
   if (total > 0) ledger.push({ date, minutes: total, reason: 'earned' });
   return { ledger, sessions: { ...s.sessions, [date]: { ...session, playEarned: total } } };
@@ -435,6 +427,13 @@ export const useStore = create<Store>()(
             out = { ...out, exams };
           }
           out = { ...out, ...withExams({ ...s, ...out } as AppState) };
+          // maths practice blocks are now longer: bring planned (not yet started) days up to date
+          const mm = config.blocks.mathsPracticeMinutes;
+          const plan = (out.plan ?? s.plan);
+          if (Object.entries(plan.days).some(([d, bs]) => d >= today && bs.some((b) => b.type === 'practice' && b.minutes < mm))) {
+            const days = Object.fromEntries(Object.entries(plan.days).map(([d, bs]) => [d, d >= today ? bs.map((b) => (b.type === 'practice' && b.minutes < mm ? { ...b, minutes: mm } : b)) : bs]));
+            out = { ...out, plan: { ...plan, days } };
+          }
           if (s.settings.paused && !s.settings.pausedDays.includes(today)) {
             out.settings = { ...s.settings, pausedDays: [...s.settings.pausedDays, today] };
           }
@@ -448,6 +447,11 @@ export const useStore = create<Store>()(
             }
           }
           return out;
+        }),
+
+        chooseRoom: (roomId) => update((s) => {
+          const today = todayKey();
+          return s.roomChoice?.[today] ? {} : { roomChoice: { ...s.roomChoice, [today]: roomId } };
         }),
 
         replaceAll: (state) => set(() => ({ ...initialState(), ...state })),

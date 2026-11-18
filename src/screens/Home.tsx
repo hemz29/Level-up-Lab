@@ -114,7 +114,7 @@ export function Home({ go }: { go: (s: Screen) => void }) {
           {c.stage === 'egg'
             ? <p className="muted">Rooms open when your egg hatches.</p>
             : gate.passed
-              ? <p className="muted">Gate passed. Your rooms are open.</p>
+              ? <p className="muted">{s.roomChoice?.[today] ? 'Today\'s room is picked. Enjoy!' : 'Blocks done! Pick any one room for today.'}</p>
               : <ul className="todo">{gate.reasons.map((r) => <li key={r}>{r}</li>)}</ul>}
           <button className="btn" onClick={() => go('rooms')}>Go to rooms</button>
         </div>

@@ -3,12 +3,13 @@
   "blocks": {
     "maxPerDay": 3,
     "focusMinutes": 25,
-    "mathsPracticeMinutes": 15,
+    "mathsPracticeMinutes": 25,
     "shortBlockMinutes": 15,
     "breakMinutes": 5,
     "minFractionToLog": 0.8,
     "lightDayMinutes": 25,
-    "halfBlockMinutes": 13
+    "halfBlockMinutes": 13,
+    "roomsAfterBlocks": 3
   },
   "gate": {
     "takeawaysRequired": 5,
@@ -39,12 +40,36 @@
     "unusedLightTokenWeek": 10
   },
   "stages": [
-    { "id": "egg", "name": "Egg", "gp": 0 },
-    { "id": "hatchling", "name": "Hatchling", "gp": 30 },
-    { "id": "juvenile", "name": "Juvenile", "gp": 400 },
-    { "id": "teen", "name": "Teen", "gp": 800 },
-    { "id": "adult", "name": "Adult", "gp": 1250 },
-    { "id": "mythic", "name": "Mythic", "gp": 1700 }
+    {
+      "id": "egg",
+      "name": "Egg",
+      "gp": 0
+    },
+    {
+      "id": "hatchling",
+      "name": "Hatchling",
+      "gp": 30
+    },
+    {
+      "id": "juvenile",
+      "name": "Juvenile",
+      "gp": 400
+    },
+    {
+      "id": "teen",
+      "name": "Teen",
+      "gp": 800
+    },
+    {
+      "id": "adult",
+      "name": "Adult",
+      "gp": 1250
+    },
+    {
+      "id": "mythic",
+      "name": "Mythic",
+      "gp": 1700
+    }
   ],
   "hatchAfterBlocks": 2,
   "consistency": {
@@ -52,7 +77,12 @@
     "requiredDays": 5
   },
   "recall": {
-    "intervalsDays": [1, 3, 7, 21],
+    "intervalsDays": [
+      1,
+      3,
+      7,
+      21
+    ],
     "minQuestions": 3,
     "maxQuestions": 5,
     "memorySubjectWeight": 2
@@ -61,11 +91,31 @@
     "avoidanceThreshold": 3
   },
   "mistakeCategories": [
-    { "id": "misread", "label": "Misread the question", "icon": "🔍" },
-    { "id": "operator", "label": "Wrong operator or number", "icon": "➗" },
-    { "id": "marks", "label": "Ignored marks allotted", "icon": "📏" },
-    { "id": "fact", "label": "Forgot a fact", "icon": "🧠" },
-    { "id": "slip", "label": "Spelling or silly slip", "icon": "✏️" }
+    {
+      "id": "misread",
+      "label": "Misread the question",
+      "icon": "🔍"
+    },
+    {
+      "id": "operator",
+      "label": "Wrong operator or number",
+      "icon": "➗"
+    },
+    {
+      "id": "marks",
+      "label": "Ignored marks allotted",
+      "icon": "📏"
+    },
+    {
+      "id": "fact",
+      "label": "Forgot a fact",
+      "icon": "🧠"
+    },
+    {
+      "id": "slip",
+      "label": "Spelling or silly slip",
+      "icon": "✏️"
+    }
   ],
   "exerciseTypes": [
     "Read the chapter",
