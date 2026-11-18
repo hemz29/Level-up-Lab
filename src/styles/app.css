@@ -340,7 +340,11 @@ main { max-width: 1180px; margin: 0 auto; padding: 24px; }
 .palette { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
 .swatch { width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--line); cursor: pointer; padding: 0; }
 .swatch.on { outline: 3px solid var(--accent); outline-offset: 2px; }
-.art-canvas { width: 100%; max-height: 70vh; object-fit: contain; aspect-ratio: 3 / 2; background: #fff; border-radius: 14px; border: 1px solid var(--line); touch-action: none; cursor: crosshair; display: block; }
+.art-canvas { width: min(100%, 105vh); height: auto; margin: 0 auto; aspect-ratio: 3 / 2; background: #fff; border-radius: 14px; border: 1px solid var(--line); touch-action: none; cursor: crosshair; display: block; }
+.art-wrap { position: relative; width: min(100%, 105vh); margin: 0 auto; }
+.art-canvas.text-mode { cursor: text; }
+.art-text-input { position: absolute; margin: 0; padding: 0 2px; box-sizing: content-box; border-width: 2px; transform: translate(-4px, -4px); min-width: 6ch; width: auto; field-sizing: content; background: rgba(255, 255, 255, 0.7); border: 2px dashed var(--accent); border-radius: 4px; font-weight: 600; line-height: 1.15; outline: none; }
+.shape-seg button { font-size: 1.15rem; min-width: 38px; line-height: 1; }
 .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
 .gallery-item { display: flex; flex-direction: column; gap: 10px; padding: 12px; }
 .thumb { width: 90px; height: 60px; object-fit: contain; background: #fff; border-radius: 8px; border: 1px solid var(--line); display: grid; place-items: center; font-size: 0.7rem; color: #888; }
