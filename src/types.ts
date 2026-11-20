@@ -205,6 +205,8 @@ export interface AppState {
   exams: Exam[];
   songs: SavedSong[];
   singingBest?: number; // best warm-up score (0..5)
-  roomChoice?: Record<DateKey, string>; // the one room picked for each day
+  roomChoice?: Record<DateKey, string>;
+  chessWins?: number;
+  runnerBest?: number; // the one room picked for each day
   activeBlock?: ActiveBlock;
 }

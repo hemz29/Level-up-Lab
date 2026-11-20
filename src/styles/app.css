@@ -701,3 +701,39 @@ main { max-width: 1180px; margin: 0 auto; padding: 24px; }
 .pic-placeholder span { font-style: normal; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: #888; }
 .pic-num { font-weight: 700; margin: 0; }
 .pic-part p { margin: 4px 0; }
+
+/* room picker on the session screen */
+.room-ready { border: 2px solid var(--accent); }
+.room-ready h2 { margin-bottom: 4px; }
+.rooms-grid.compact { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); margin-top: 10px; }
+.rooms-grid.compact .room { padding: 12px; }
+.rooms-grid.compact .room h2 { font-size: 1rem; }
+.room.chosen { outline: 3px solid var(--accent); }
+
+/* chess */
+.chess-layout { display: grid; grid-template-columns: minmax(220px, 300px) minmax(0, 560px); gap: 20px; align-items: start; }
+@media (max-width: 760px) { .chess-layout { grid-template-columns: 1fr; } .chess-side { order: 2; } }
+.chess-side { display: flex; flex-direction: column; gap: 12px; }
+.chess-board { display: grid; grid-template-columns: repeat(8, 1fr); aspect-ratio: 1; width: 100%; border-radius: 10px; overflow: hidden; border: 3px solid #5b3a24; box-shadow: 0 8px 24px rgba(0,0,0,0.35); }
+.chess-board .sq { position: relative; border: 0; padding: 0; margin: 0; display: grid; place-items: center; cursor: pointer; aspect-ratio: 1; }
+.chess-board .sq.light { background: #f0d9b5; }
+.chess-board .sq.dark { background: #b58863; }
+.chess-board .sq.last { box-shadow: inset 0 0 0 100px rgba(255, 220, 60, 0.38); }
+.chess-board .sq.sel { box-shadow: inset 0 0 0 100px rgba(80, 180, 255, 0.5); }
+.chess-board .sq.check { box-shadow: inset 0 0 18px 6px rgba(230, 30, 30, 0.85); }
+.chess-board .pc { font-size: clamp(26px, 7.5vw, 54px); line-height: 1; user-select: none; font-family: "Segoe UI Symbol", "Noto Sans Symbols 2", "Apple Symbols", serif; }
+.chess-board .pc.w { color: #fff; text-shadow: 0 0 2px #000, 0 0 1px #000, 0 2px 3px rgba(0,0,0,0.5); }
+.chess-board .pc.b { color: #1b1b1f; text-shadow: 0 1px 1px rgba(255,255,255,0.4); }
+.chess-board .hint-dot { position: absolute; width: 28%; height: 28%; border-radius: 50%; background: rgba(20, 20, 20, 0.28); }
+.chess-board .hint-cap { position: absolute; inset: 6%; border-radius: 50%; border: 5px solid rgba(20, 20, 20, 0.3); }
+.chess-board .coord { position: absolute; font-size: 10px; font-weight: 700; opacity: 0.7; color: #3b2615; }
+.chess-board .coord.rank { top: 2px; left: 3px; }
+.chess-board .coord.file { bottom: 1px; right: 4px; }
+.captured { font-size: 1.3rem; letter-spacing: 1px; color: var(--fg); }
+.captured.white { color: #fff; text-shadow: 0 0 2px #000; }
+
+/* sky runner */
+.runner-wrap { position: relative; width: min(100%, 140vh); margin: 0 auto; }
+.runner-canvas { width: 100%; height: auto; aspect-ratio: 960 / 420; display: block; border-radius: 14px; touch-action: none; cursor: pointer; }
+.runner-card { position: absolute; inset: 0; margin: auto; width: min(90%, 420px); height: fit-content; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
+.runner-card p { margin: 6px 0 14px; }

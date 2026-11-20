@@ -109,6 +109,8 @@ interface Actions {
   renameSong(id: string, title: string): void;
   removeSong(id: string): void;
   recordSingingScore(score: number): void;
+  recordChessWin(level: string): void;
+  recordRunnerScore(score: number): void;
   togglePin(id: string): void;
   removeGalleryItem(id: string): void;
   markFeedback(weekStart: DateKey): void;
@@ -402,6 +404,8 @@ export const useStore = create<Store>()(
         addSong: (song) => update((s) => ({ songs: [song, ...(s.songs ?? [])].slice(0, 30) })),
         renameSong: (id, title) => update((s) => ({ songs: (s.songs ?? []).map((x) => (x.id === id ? { ...x, title } : x)) })),
         removeSong: (id) => update((s) => ({ songs: (s.songs ?? []).filter((x) => x.id !== id) })),
+        recordChessWin: () => update((s) => ({ chessWins: (s.chessWins ?? 0) + 1 })),
+        recordRunnerScore: (score) => update((s) => ({ runnerBest: Math.max(s.runnerBest ?? 0, score) })),
         recordSingingScore: (score) => update((s) => ({ singingBest: Math.max(s.singingBest ?? 0, score) })),
         togglePin: (id) => update((s) => ({ gallery: s.gallery.map((g) => (g.id === id ? { ...g, pinned: !g.pinned } : g)) })),
         removeGalleryItem: (id) => update((s) => ({ gallery: s.gallery.filter((g) => g.id !== id) })),

@@ -19,6 +19,7 @@ import { play } from '../lib/sound';
 import { lines } from '../lib/voice';
 import { Report } from './Report';
 import { dayPlayInput } from '../store/dayRules';
+import { RoomPicker } from './Rooms';
 import type { Screen } from '../App';
 
 export function Session({ go }: { go: (s: Screen) => void }) {
@@ -167,6 +168,13 @@ function Hub({ go }: { go: (s: Screen) => void }) {
   return (
     <div className="page">
       <h1>Today's session</h1>
+      {gate.passed && !s.roomChoice?.[today] && (
+        <div className="card room-ready">
+          <h2>🎉 {gate.blocksDone} blocks done! Pick your room for today</h2>
+          <p className="muted">Choose any one. The others open again tomorrow. You can still do a bonus block or wrap up first if you like.</p>
+          <RoomPicker go={go} compact />
+        </div>
+      )}
       <div className="hub-grid">
         {session.selected.map((b, i) => {
           const log = done.filter((x) => !x.extra)[i];
@@ -543,7 +551,7 @@ function WrapUp({ onBack, go }: { onBack: () => void; go: (s: Screen) => void })
           <>
             <h3>Play time earned: {total} min</h3>
             <ul>{parts.map((p) => <li key={p.label}>{p.label}: +{p.minutes} min</li>)}</ul>
-            {!parts.length && <p className="muted">Finish all your planned blocks to earn the base 15 minutes.</p>}
+
             {total >= config.playTime.dailyCeilingMinutes && <p className="muted small">That's the daily maximum ({config.playTime.dailyCeilingMinutes} min). Impressive!</p>}
           </>
         ) : (
@@ -554,7 +562,7 @@ function WrapUp({ onBack, go }: { onBack: () => void; go: (s: Screen) => void })
         {!session.reportSent
           ? <button className="btn primary big" onClick={() => setShowReport(true)}>Tell {s.profile!.parentLabel} how today went</button>
           : <span className="pill strong">Report sent ✓</span>}
-        <button className="btn" onClick={() => go('rooms')}>Go to rooms</button>
+        <button className="btn" onClick={() => go('rooms')}>{gate.passed && !s.roomChoice?.[today] ? '🎉 Pick my room' : 'Go to rooms'}</button>
         <button className="btn ghost" onClick={onBack}>Back to session</button>
       </div>
     </div>
